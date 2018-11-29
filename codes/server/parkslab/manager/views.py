@@ -6,8 +6,8 @@ from manager.models import Account
 # Create your views here.
 
 class AccountListView(TemplateView):
-    template_name = "worker_list.html"
+    template_name = "index.html"
 
     def get(self, request, *args, **kwargs):
-        context = super(AccountListView, self)
+        context = super(AccountListView, self).get_context_data(**kwargs)
         return render(self.request, self.template_name, context)
