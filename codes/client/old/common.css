@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+#header {
+    display: flex;
+    height: 70pt;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.headerPanel {
+    height: 100%;
+    margin: 5pt;
+}
+
+#parksLogo {
+    height:70%
+}
+
+#parksSign {
+    height:70%
+}
+
+#personalPanel {
+    display: flex;
+    align-items: center;
+}
+
+#idPanel, #passPanel {
+    width: 300px;
+    text-align: right;
+}
+
+#signInPanel {
+    text-align: center;
+    width: 80pt;
+    background: #01DF01;
+    border-radius: 10px;
+}
+
+#signUpPanel {
+    text-align: center;
+    width: 80pt;
+    background: #FFFF00;
+    border-radius: 10px;
+}
+
+
+#JPN {
+    display: block;
+    height: 25px;
+    width: 80px;
+    text-align: center;
+    text-decoration: none;
+    color: #FF0000;
+    border: solid 3px #FF0000;
+    border-radius: 10px;
+    font-size: 100%;
+}
+
+#ENG {
+    display: block;
+    height: 25px;
+    text-align: center;
+    text-decoration: none;
+    color: #00BFFF;
+    border: solid 3px #00BFFF;
+    border-radius: 10px;
+    font-size: 100%;
+}
