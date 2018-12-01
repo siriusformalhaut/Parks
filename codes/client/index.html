@@ -1,63 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
   <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="common.css">
-    <title>Parks</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Parks - Home</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="Bootstrap/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
   </head>
+
   <body>
-    <div id="header">
-      <div id="parksSignPanel" class="headerPanel">
-	<a href="index.html" style="text-decoration:none">
-	  <img id="parksLogo" src="image/logo.png" alt="Parksロゴ" />
-	  <img id="parksSign" src="image/sign.png" alt="Parks" />
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img id="parksLogo" src="image/logo.png" height="50" alt="Parksロゴ" />
+	  <img id="parksSign" src="image/sign.png" height="50" alt="Parks" />
 	</a>
+	<form class="form-inline">
+	  <input class="form-control mr-sm-2" type="search" placeholder="Email" aria-label="Email">
+	  <input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
+	  <button class="btn btn-success mr-sm-2" type="submit">ログイン</button>
+	  <a class="btn btn-warning my-2 my-sm-0" href="#" role="button">新規登録</a>
+	</form>
+	<div>
+	  <a class="btn btn-outline-danger btn-sm" href="#" role="button">日本語</a>
+	  <a class="btn btn-outline-primary btn-sm" href="#" role="button">English</a>
+	</div>	  
+	<!--
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+-->
       </div>
-      
-      <div id="personalPanel" class="headerPanel">
-	<div id="idPassPanel">
-	  <div id="idPanel">
-	    <p>
-	      E-mail:
-	      <input type="text" name="id" size="30">
-	    </p>
-	  </div>
-	  <div id="passPanel">
-	    <p>
-	      Pass:
-	      <input type="password" name="pass" size="30">
-	    </p>
-	  </div>
-	</div>
-	<div id="signInPanel">
-	  <p>
-	    Sign in<br>
-	    ログイン
-	  </p>
-	</div>
-	<div id="signUpPanel">
-	  <p>
-	    Sign up<br>
-	    登録
-	  </p>
-	</div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h1 class="mt-5">作成中</h1>
+          <p class="lead">まだだめ。</p>
+          <ul class="list-unstyled">
+            <li>Bootstrap 4.1.3</li>
+            <li>jQuery 3.3.1</li>
+          </ul>
+        </div>
       </div>
-      
-      <div id="languagePanel" class="headerPanel">
-	<a href="" id="JPN">
-	  日本語
-	</a>
-	<a href="" id="ENG">
-	  English
-	</a>
-      </div>
-      	
     </div>
-    <div id="main">
-      <p>
-	めいん。
-      </p>
-      
-    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="Bootstrap/vendor/jquery/jquery.min.js"></script>
+    <script src="Bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   </body>
+
 </html>
