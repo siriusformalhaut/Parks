@@ -10,7 +10,7 @@ class Account(models.Model):
     GENERAL = 15
 
     #名前
-    mane = models.CharField(max_length = 128)
+    name = models.CharField(max_length = 128)
     #誕生日(仮置き。アカウント認証情報とかに使うかも。使わないかも。)
     birthday = models.DateField()
     #性別
