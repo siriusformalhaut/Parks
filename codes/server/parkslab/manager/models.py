@@ -11,6 +11,8 @@ class Account(models.Model):
 
     #名前
     name = models.CharField(max_length = 128)
+    #アカウント名(本名明かしたくない人向け(一般のアカウントには需要ありそうなので追加)TODO 任意項目にする)
+    accountname = models.CharField(max_length = 128)
     #誕生日(仮置き。アカウント認証情報とかに使うかも。使わないかも。)
     birthday = models.DateField()
     #性別
