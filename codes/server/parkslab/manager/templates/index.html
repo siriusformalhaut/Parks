@@ -11,7 +11,7 @@
     <title>Parks - Home</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="Bootstrap/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href= "{% static 'Bootstrap/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" >
 
   </head>
 
@@ -21,8 +21,8 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img id="parksLogo" src="image/logo.png" height="50" alt="Parksロゴ" />
-	  <img id="parksSign" src="image/sign.png" height="50" alt="Parks" />
+          <img id="parksLogo" src="{% static 'image/logo.png' %}" height="50" alt="Parksロゴ" />
+	  <img id="parksSign" src="{% static 'image/sign.png' %}" height="50" alt="Parks" />
 	</a>
 	<form class="form-inline">
 	  <input class="form-control mr-sm-2" type="email" placeholder="Email" aria-label="Email">
@@ -111,8 +111,8 @@
     </div>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="Bootstrap/vendor/jquery/jquery.min.js"></script>
-    <script src="Bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'Bootstrap/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'Bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
   </body>
 

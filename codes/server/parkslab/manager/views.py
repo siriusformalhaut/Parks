@@ -11,3 +11,4 @@ class AccountListView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super(AccountListView, self).get_context_data(**kwargs)
         return render(self.request, self.template_name, context)
+

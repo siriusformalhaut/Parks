@@ -21,8 +21,7 @@ class Account(models.Model):
     email = models.EmailField()
     #パスワード TODO 何文字制限か決める
     password = models.CharField(max_length = 128)
+    #所属機関
+    institution = models.CharField(max_length = 128)
 
-
-
-
-    
+    #TODO 投げ銭した先の機関名を持たせたい。別テーブルでアカウント情報を紐づけて持たせる。
