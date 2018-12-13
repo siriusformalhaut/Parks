@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser
+from manager.managers import PersonManager
 
 # Create your models here.
 class Account(models.Model):
@@ -25,3 +27,16 @@ class Account(models.Model):
     institution = models.CharField(max_length = 128)
 
     #TODO 投げ銭した先の機関名を持たせたい。別テーブルでアカウント情報を紐づけて持たせる。
+
+
+#ログイン機能実装の際に追記。今後要編集。
+class Person(AbstractBaseUser):
+    objects = PersonManager()
+
+    identifier = models.CharField(max_length=64, unique=True, blank=False)
+    name = models.CharField(max_length = 128)
+    email = models.EmailField()
+
+    is_active = models.BooleanField(default=True)
+
+    USERNAME_FIELD = 'identifier'
