@@ -1,72 +1,82 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    {% load staticfiles %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<head>
+		{% load staticfiles %}
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
 
-    <title>Parks - {% block title %}welcome{% endblock %}</title>
+		<title>{% block title %}Welcome{% endblock %} - Parks</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href= "{% static 'Bootstrap/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" >
-    {% block additional-head %}{% endblock %}
-  </head>
+		<!-- Bootstrap core CSS -->
+		<link href= "{% static 'Bootstrap/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" >
+		{% block additional-head %}{% endblock %}
+	</head>
 
-  <body>
+	<body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img id="parksLogo" src="{% static 'image/logo.png' %}" height="50" alt="Parksロゴ" />
-	  <img id="parksSign" src="{% static 'image/sign.png' %}" height="50" alt="Parks" />
-	</a>
-	<form class="form-inline">
-	  <input class="form-control mr-sm-2" type="email" placeholder="Email" aria-label="Email">
-	  <input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
-	  <button class="btn btn-success mr-sm-2" type="submit">ログイン</button>
-	  <a class="btn btn-warning my-2 my-sm-0" href="#" role="button">新規登録</a>
-	</form>
-	<div>
-	  <a class="btn btn-outline-danger btn-sm" href="#" role="button">日本語</a>
-	  <a class="btn btn-outline-primary btn-sm" href="#" role="button">English</a>
-	</div>	  
-	<!--
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home
-                <span class="sr-only">(current)</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Services</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
-            </li>
-          </ul>
-        </div>
--->
-      </div>
-    </nav>
+		<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
+			<div class="container">
+				<a class="navbar-brand" href="#">
+					<img id="parksLogo" src="{% static 'image/logo.png' %}" height="50" alt="Parksロゴ" />
+					<img id="parksSign" src="{% static 'image/sign.png' %}" height="50" alt="Parks" />
+				</a>
+				<form class="form-inline">
+					<input class="form-control mr-sm-2" type="email" placeholder="Email" aria-label="Email">
+					<input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
+					<button class="btn btn-success mr-sm-2" type="submit">ログイン</button>
+					<a class="btn btn-warning my-2 my-sm-0" href="#" role="button">新規登録</a>
+				</form>
+				<div>
+					<a class="btn btn-outline-danger btn-sm" href="#" role="button">日本語</a>
+					<a class="btn btn-outline-primary btn-sm" href="#" role="button">English</a>
+				</div>	  
+				<!--
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+					<li class="nav-item active">
+					<a class="nav-link" href="#">Home
+					<span class="sr-only">(current)</span>
+					</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">About</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Services</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Contact</a>
+					</li>
+					</ul>
+					</div>
+				-->
+			</div>
+		</nav>
 
-    <!-- Page Content -->
-    {% block body %}
-    {% endblock %}
-    <!-- Bootstrap core JavaScript -->
-    <script src="{% static 'Bootstrap/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'Bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+		<!-- Page Content -->
+		{% block body %}
+		{% endblock %}
 
-  </body>
+		<!-- Footer -->
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<a href="https://mizutaniken1992.wixsite.com/parks" target="_blank">Parks, Inc.</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript -->
+		<script src="{% static 'Bootstrap/vendor/jquery/jquery.min.js' %}"></script>
+		<script src="{% static 'Bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+	</body>
 
 </html>
