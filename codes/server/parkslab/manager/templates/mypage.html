@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My Page{% endblock %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container">
+	<div class="row">
+		<div class="col-3 border-right">
+			<h1>My Page</h1>
+			<div class="list-group">
+				<a href="#" class="list-group-item">プロフィール</a>
+				<a href="#" class="list-group-item">グループ</a>
+			</div>
+		</div>
+
+		<div class="col-9">
+			{% block subbody %}
+			<h1>なんか編集する画面</h1>
+			{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
