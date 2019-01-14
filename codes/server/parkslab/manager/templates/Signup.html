@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container">
+	<div class="row justify-content-center mt-5 mb-5">
+		<div class="col-8 text-center">
+			<h1>ようこそ、Parksへ！</h1>
+		</div>
+	</div>
+
+
+	<form>
+		<div class="row justify-content-around mt-3">
+			<div class="col-3">
+				<div class="form-group">
+					<label for="signupFormControlInput1">名前</label>
+					<input type="text" class="form-control" id="signupFormControlInput1" placeholder="姓 名">
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="form-group">
+					<label for="signupFormControlInput2">メールアドレス</label>
+					<input type="email" class="form-control" id="signupFormControlInput2" placeholder="sample@example.com">
+				</div>
+			</div>
+			<div class="col-3">
+				<div class="form-group">
+					<label for="signupFormControlInput3">パスワード</label>
+					<input type="password" class="form-control" id="signupFormControlInput3" placeholder="Password">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12 text-center" style="height:100px;overflow:auto;border:1px solid #aaa;padding:10px;">
+				<h1 class="mt-5">利用規約</h1>
+				<p class="lead">用法・用量を守って使用してください</p>
+			</div>
+		</div>
+		<div class="row justify-content-around mt-3">
+			<div class="col-6 text-center form-group form-check">
+				<input type="checkbox" class="form-check-input" id="signupFormCheckbox">
+				<label class="form-check-label" for="signupFormCheckbox">利用規約に同意します</label>
+			</div>			
+		</div>
+		<div class="row justify-content-around">
+			<div class="col-6 text-center">
+				<button type="submit" class="btn btn-primary">送信</button>
+			</div>			
+		</div>
+	</form>
+</div>
+<div class="container">
+</div>
+{% endblock %}
