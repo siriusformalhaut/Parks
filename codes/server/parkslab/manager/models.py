@@ -1,74 +1,104 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
-from manager.managers import PersonManager
+from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from django.contrib.auth.base_user import BaseUserManager
 
-# Create your models here.
-class Account(models.Model):
-    MAN = 0
-    WOMAN = 1
 
-    COMPANY = 5
-    RESERCHER = 10
-    GENERAL = 15
+class UserAccountManager(BaseUserManager):
+    """ユーザーマネージャー."""
 
-    #ID
-    id = models.BigIntegerField()
-    #名前
-    name = models.CharField(max_length = 128)
-    #アカウント名(本名明かしたくない人向け(一般のアカウントには需要ありそうなので追加)TODO 任意項目にする)
-    accountname = models.CharField(max_length = 128)
-    #誕生日(仮置き。アカウント認証情報とかに使うかも。使わないかも。)
-    birthday = models.DateField()
-    #性別
-    sex = models.IntegerField()
-    #メールアドレス
-    email = models.EmailField()
-    #パスワード TODO 何文字制限か決める
-    password = models.CharField(max_length = 128)
-    #所属機関
-    institution = models.CharField(max_length = 128)
+    use_in_migrations = True
 
-    #TODO 投げ銭した先の機関名を持たせたい。別テーブルでアカウント情報を紐づけて持たせる。
+    def _create_user(self, email, password, name, display_name, birthday, **extra_fields):
+        """メールアドレスでの登録を必須にする"""
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+
+        if not name:
+            raise ValueError('名前を入力してください')
+        name = self.name
+
+        if not display_name:
+            raise ValueError('表示名を入力してください')
+
+        if not birthday:
+            raise ValueError('生年月日を入力してください')
+
+        up_date = timezone.now()
+
+        user = self.model(email=email, name=name, display_name=display_name, birthday=birthday, up_date=up_date, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password, name, display_name, birthday, **extra_fields):
+        """is_staff(管理サイトにログインできるか)と、is_superuer(全ての権限)をFalseに"""
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, name, display_name, birthday, **extra_fields)
+
+    def create_superuser(self, email, password, name, display_name, birthday, **extra_fields):
+        """スーパーユーザーは、is_staffとis_superuserをTrueに"""
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, name, display_name, birthday, **extra_fields)
+
+
+class UserAccount(AbstractBaseUser, PermissionsMixin):
+    """カスタムユーザーモデル."""
+
+    email = models.EmailField(_('email address'), unique=True)
+    name = models.CharField(_('name'), max_length=128, blank=False)
+    display_name = models.CharField(_('display name'), max_length=128, blank=False)
+    birthday = models.DateField(_('birthday'), blank=False, default='2000-01-01')
+
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_(
+            'Designates whether the user can log into this admin site.'),
+    )
+ 
+    is_active = models.BooleanField(
+        _('active'),
+        default=True,
+        help_text=_(
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        ),
+    )
+    up_date = models.DateTimeField(_('update date'), default=timezone.now)
     
+    objects = UserAccountManager()
 
+    EMAIL_FIELD = 'email'
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'display_name', 'birthday',]
 
-#投げ銭情報。TODO 別機能なのでそもそもちがう機能として持たせたほうがいいかも
-#TODO 投げ銭時系列情報も持たせる
-class GivingMoneyInfo(models.Model):
+    class Meta:
+        verbose_name = _('user')
+        verbose_name_plural = _('users')
 
-    #アカウントID
-    #TODO 外部キー参照でアカウント情報と紐づける
-    accountid = models.BigIntegerField()
-    #所属機関
-    institution = models.CharField(max_length = 128)
-    #投げ銭した量の総計
-    givemoney = models.BigIntegerField()
-    #投げ銭された量の総計
-    getmoney = models.BigIntegerField()
-    
-#投げ銭時系列情報
-# TODO 投げ銭をした/された時間帯の管理  この金額の合計金額をGivingMonneyinfoに持たせる。この持たせ方でいいのか知らんけど。
-class GivingMoneyTimeSeriesInfo(models.Model):
+    def get_full_name(self):
+        return self.name
 
-    #アカウントID
-    #TODO 外部キー参照でアカウント情報と紐づける
-    accoutid = models.BigIntegerField()
-    #所属機関
-    institution = models.CharField(max_length = 128)
-    #ある時間帯に投げ銭をした額の総量
-    givmoney = models.BigAutoField()
-    #投げ銭をした/された時間帯の情報
-    GivingMoneyTime = models.datetime()
+    def get_short_name(self):
+        return self.display_name
 
+    @property
+    def username(self):
+        """username属性のゲッター
 
-#ログイン機能実装の際に追記。今後要編集。
-class Person(AbstractBaseUser):
-    objects = PersonManager()
-
-    identifier = models.CharField(max_length=64, unique=True, blank=False)
-    name = models.CharField(max_length = 128)
-    email = models.EmailField()
-
-    is_active = models.BooleanField(default=True)
-
-    USERNAME_FIELD = 'identifier'
+        他アプリケーションが、username属性にアクセスした場合に備えて定義
+        メールアドレスを返す
+        """
+        return self.email
