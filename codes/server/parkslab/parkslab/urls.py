@@ -38,3 +38,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^index/', manager_view.AccountListView.as_view())
 ]
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('manager.urls')),
+]
