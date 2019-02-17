@@ -31,3 +31,8 @@ class UserCreateForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+class ProjectSearchForm(forms.Form):
+    """Project Searching Form"""
+    keyword = forms.CharField(min_length=2, max_length=256)
+    

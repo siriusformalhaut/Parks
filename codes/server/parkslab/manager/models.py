@@ -107,3 +107,13 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         メールアドレスを返す
         """
         return self.email
+
+class Project(models.Model):
+    users = models.ManyToManyField(UserAccount)
+    name = models.CharField(max_length=256)
+    details = models.TextField()
+    start_date = models.DateField()
+
+    def __str__(self):
+        return self.name
+ 
