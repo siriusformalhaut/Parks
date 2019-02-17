@@ -30,15 +30,15 @@ class MyUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2'),
+            'fields': ('email', 'name', 'password1', 'password2'),
         }),
     )
     form = MyUserChangeForm
     add_form = MyUserCreationForm
-    list_display = ('email', 'name', 'display_name')
-    list_filter = ('is_superuser', 'is_active', 'groups')
+    list_display = ('name', 'email', 'last_login', 'up_date')
+    list_filter = ('is_staff','is_superuser', 'is_active', 'groups')
     search_fields = ('email', 'name', 'birthday')
-    ordering = ('email',)
+    ordering = ('name',)
 
 
 admin.site.register(UserAccount, MyUserAdmin)

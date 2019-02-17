@@ -148,3 +148,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 AUTH_USER_MODEL = 'manager.UserAccount'
+
+# display e-mail in console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
