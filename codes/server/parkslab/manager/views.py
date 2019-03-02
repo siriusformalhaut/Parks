@@ -21,6 +21,9 @@ from .forms import (
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect
 
+import operator
+from functools import reduce
+
 User = get_user_model()
 # Create your views here.
 
@@ -156,7 +159,11 @@ def project_search(request):
         form = ProjectSearchForm(request.POST)
         projects = Project.objects.all()
         if form.is_valid():
-            projects = Project.objects.filter(Q(name__contains=form.cleaned_data['keyword']))
+            keywords = form.cleaned_data['keyword'].split()
+            query_name = reduce(operator.and_, (Q(name__contains=keyword) for keyword in keywords))
+            query_detail = reduce(operator.and_, (Q(details__contains=keyword) for keyword in keywords))
+            query_all = query_name | query_detail
+            projects = Project.objects.filter(query_all)
     return render(request,
                   'project_search.html',
                   {'form':form, 'projects':projects})
