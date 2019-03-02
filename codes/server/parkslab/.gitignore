@@ -1,0 +1,4 @@
+db.sqlite3
+manager/migrations/
+manager/__pycache__/
+parkslab/__pycache__/
