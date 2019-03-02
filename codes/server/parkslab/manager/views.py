@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
-from manager.models import UserAccount
+from manager.models import UserAccount, Project
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -16,9 +16,10 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.views import generic
 from .forms import (
-    LoginForm, UserCreateForm
+    LoginForm, UserCreateForm, ProjectSearchForm
 )
-
+from django.db.models import Q
+from django.views.decorators.csrf import csrf_protect
 
 User = get_user_model()
 # Create your views here.
@@ -145,3 +146,18 @@ class UserCreateComplete(generic.TemplateView):
                     return super().get(request, **kwargs)
 
         return HttpResponseBadRequest()
+
+@csrf_protect
+def project_search(request):
+    """Search Projects"""
+    form = ProjectSearchForm()
+    projects = Project.objects.all()
+    if request.method == 'POST':
+        form = ProjectSearchForm(request.POST)
+        projects = Project.objects.all()
+        if form.is_valid():
+            projects = Project.objects.filter(Q(name__contains=form.cleaned_data['keyword']))
+    return render(request,
+                  'project_search.html',
+                  {'form':form, 'projects':projects})
+    
