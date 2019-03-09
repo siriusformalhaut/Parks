@@ -160,10 +160,8 @@ def project_search(request):
         projects = Project.objects.all()
         if form.is_valid():
             keywords = form.cleaned_data['keyword'].split()
-            query_name = reduce(operator.and_, (Q(name__contains=keyword) for keyword in keywords))
-            query_detail = reduce(operator.and_, (Q(details__contains=keyword) for keyword in keywords))
-            query_all = query_name | query_detail
-            projects = Project.objects.filter(query_all)
+            query = reduce(operator.and_, ((Q(name__contains=keyword)|Q(details__contains=keyword)) for keyword in keywords))
+            projects = Project.objects.filter(query)
     return render(request,
                   'project_search.html',
                   {'form':form, 'projects':projects})
