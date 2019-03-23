@@ -24,6 +24,8 @@ from django.views.decorators.csrf import csrf_protect
 import operator
 from functools import reduce
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 User = get_user_model()
 # Create your views here.
 
@@ -150,19 +152,50 @@ class UserCreateComplete(generic.TemplateView):
 
         return HttpResponseBadRequest()
 
+class ProjectIndex(generic.ListView):
+    model = Project
+    paginate_by = 10
+
+def paginate_queryset(request, queryset, count):
+    """return a page object"""
+    paginator = Paginator(queryset, count)
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    return page_obj
+
 @csrf_protect
 def project_search(request):
     """Search Projects"""
+    # create an empty form
     form = ProjectSearchForm()
+    # fetch all data of projects
     projects = Project.objects.all()
+    # When the search button is pushed
     if request.method == 'POST':
+        # fetch the form data
         form = ProjectSearchForm(request.POST)
         projects = Project.objects.all()
         if form.is_valid():
+            # split the inputed data into keywords
             keywords = form.cleaned_data['keyword'].split()
+            # make query from keywords: "and" combination of (keyword1 in name or details)
             query = reduce(operator.and_, ((Q(name__contains=keyword)|Q(details__contains=keyword)) for keyword in keywords))
+            # fetch the project data with the query
             projects = Project.objects.filter(query)
+    # paging
+    page_obj = paginate_queryset(request, projects, ProjectIndex.paginate_by)
+    # generate the context
+    context = {
+        'form':form,
+        'page_obj':page_obj,
+    }
+    # render project_search.html with the fetched project data
     return render(request,
                   'project_search.html',
-                  {'form':form, 'projects':projects})
+                  context)
     
