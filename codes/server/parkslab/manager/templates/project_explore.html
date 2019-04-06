@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Explore{% endblock %}
+{% load staticfiles %}
+
+{% block additional-head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/project_explore.css' %}" />
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container" id="explorefield">
+    <div class="ltheme" id="astronomy">宇宙</div>
+    <div class="stheme" id="planet">惑星</div>
+    <div class="stheme" id="particle">素粒子</div>
+
+    <div class="ltheme" id="nano">ナノ粒子</div>
+    <!--
+    <ul>
+        <li>
+            <a href="#">宇宙</a>
+            <ul>
+                <li><a href="#">惑星</a></li>
+                <li><a href="#">素粒子</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">ナノ粒子</a>
+        </li>
+        <li>
+            <a href="#">人体</a>
+            <ul>
+                <li><a href="#">長寿</a></li>
+                <li><a href="#">感覚器</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">動物</a>
+        </li>
+        <li>
+            <a href="#">植物</a>
+        </li>
+    </ul>
+    -->
+</div>
+
+<script type="text/javascript" src="{% static 'js/anime.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/project_explore.js' %}"></script>
+
+{% endblock %}
