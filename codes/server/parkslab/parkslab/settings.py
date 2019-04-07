@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'manager',
+    'imagekit'
 ]
 
 MIDDLEWARE = [
@@ -160,4 +161,9 @@ EMAIL_HOST_PASSWORD = 'henjiha0#'
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'no-reply@parks-lab.sakura.ne.jp'
+
+# media setting
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 
