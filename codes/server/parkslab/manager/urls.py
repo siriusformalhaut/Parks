@@ -9,4 +9,5 @@ urlpatterns = [
     path('user_create/done', views.UserCreateDone.as_view(), name='user_create_done'),
     path('user_create/complete/<token>/', views.UserCreateComplete.as_view(), name='user_create_complete'),
     path('project/search/', views.project_search, name='project_search'),
+    path('user/home/',views.UserHome.as_view(), name='user_home'),
 ]

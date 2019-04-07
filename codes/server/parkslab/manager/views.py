@@ -168,3 +168,7 @@ def project_search(request):
                   'project_search.html',
                   {'form':form, 'projects':projects})
     
+class UserHome(generic.TemplateView):
+    template_name = 'user_home.html'
+
+
