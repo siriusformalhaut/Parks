@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'manager',
+    'sass_processor',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,10 @@ EMAIL_HOST_PASSWORD = 'henjiha0#'
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'no-reply@parks-lab.sakura.ne.jp'
+
+#sass settings
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
+SASS_PRECISION = 8
+SASS_OUTPUT_STYLE = 'expanded'
+SASS_TEMPLATE_EXTS = ['.html', '.haml']

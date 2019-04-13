@@ -1,33 +1,41 @@
-/*
-// get objects whose classes are 'ltheme'
-lobjects = document.getElementsByClassName('ltheme');
-// for each object (note that 'forEach' is not applicable!)
-for (let i = 0; i < lobjects.length; ++i){
-    // onclick animation
-    lobjects[i].addEventListener('click',function()
-    {
-        anime({
-            targets: '#'+lobjects[i].id,
-            translateY: 250,
-            duration: 3000,
-            easing: 'linear'
-        });
-    });    
-}
-
 objects = document.getElementsByClassName('theme');
-objlen = objects.length;
-for (let i = 0; i < objlen; ++i){
+let selected = 0;
+let defaultleft = new Array();
+let defaulttop = new Array();
+let moved = new Array();
 
-    anime({
-        targets: '#'+objects[i].id,
-        translateX: document.getElementById('explorefield').offsetWidth-objects[i].offsetWidth,
-        duration: 6000,
-        easing: 'linear',
-        autoplay: true,
-        loop: true,
-        delay: 1000*i/objlen 
+for (let i = 0; i < objects.length; ++i){
+    moved[i] = false;
+    objects[i].addEventListener('click', function()
+    {
+        if(!moved[i]){
+            defaultleft[i] = objects[i].getBoundingClientRect().left;
+            defaulttop[i] = objects[i].getBoundingClientRect().top;
+            anime({
+                targets: '#'+objects[i].id,
+                duration: 500,
+                easing: 'linear',
+                left: selected * 150 + 50,
+                top: 50
+            })
+        }
+        selected++;
+        moved[i] = true;
     })
-
 }
-*/
+
+ObjReset = document.getElementsByClassName('reset');
+ObjReset[0].addEventListener('click', function()
+{   
+    for (let i = 0; i < objects.length; ++i){
+        anime({
+            targets: '#'+objects[i].id,
+            duration: 500,
+            easing: 'linear',
+            left: defaultleft[i],
+            top: defaulttop[i]-15
+        })
+        moved[i] = false;
+    }
+    selected = 0;
+})
