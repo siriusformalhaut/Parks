@@ -25,16 +25,16 @@
   --web-view-name: custom - 43;
   --web-view-id: custom___43;
   --web-enable-deep-linking: true; }
-#explorefield #parks__________1 {
-  opacity: 1;
-  fill: url(#parks__________1_A42_Rectangle_2_pattern); }
-#explorefield .parks__________1 {
+#explorefield #custom___43 .parks__________1 {
   position: absolute;
   overflow: visible;
   width: 1098.333px;
   height: 600px;
   left: 0px;
   top: 0px; }
+#explorefield #custom___43 .parks__________1 #parks__________1 {
+  opacity: 1;
+  fill: url(#parks__________1_A42_Rectangle_2_pattern); }
 #explorefield #______4 {
   opacity: 1;
   position: absolute;
