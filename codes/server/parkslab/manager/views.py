@@ -6,9 +6,8 @@ from manager.models import UserAccount, Project
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import (
-    LoginView, LogoutView
-)
+from django.contrib.auth.views import LoginView as AuthLoginView
+from django.contrib.auth.views import LogoutView as AuthLogoutView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.signing import BadSignature, SignatureExpired, loads, dumps
 from django.http import Http404, HttpResponseBadRequest
@@ -25,6 +24,7 @@ import operator
 from functools import reduce
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 User = get_user_model()
 # Create your views here.
@@ -53,32 +53,13 @@ class AccountListView(TemplateView):
             redirect_url = '/worker_list/'
         return redirect_url
 
-class CustomLoginView(TemplateView):
-    template_name = "login.html"
+class LoginView(AuthLoginView):
+    template_name = 'manager/index.html'
 
-    def get(self, _, *args, **kwargs):
-        if self.request.user.is_authenticated():
-            return redirect(self.get_next_redirect_url())
-        else:
-            kwargs = {'template_name': 'login.html'}
-            return login(self.request, *args, **kwargs)
 
-    def post(self, _, *args, **kwargs):
-        username = self.request.POST['username']
-        password = self.request.POST['password']
-        user = authenticate(username=username, password=password)  # 1
-        if user is not None:
-            login(self.request, user)
-            return redirect(self.get_next_redirect_url())
-        else:
-            kwargs = {'template_name': 'login.html'}
-            return login(self.request, *args, **kwargs)
+class LogoutView(LoginRequiredMixin, AuthLogoutView):
+    template_name = 'manager/logout.html'
 
-    def get_next_redirect_url(self):
-        redirect_url = self.request.GET.get('next')
-        if not redirect_url or redirect_url == '/':
-            redirect_url = '/worker_list/'
-        return redirect_url
 
 class UserCreate(generic.CreateView):
     """ユーザー仮登録"""

@@ -22,7 +22,7 @@ import manager.views as manager_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^login/', manager_view.CustomLoginView.as_view()),
+    path(r'', include('manager.urls')),
     #url(r'^logout/', manager_view.logout_view),
     #url(r'^worker_list/', login_required(manager_view.WorkerListView.as_view())),
     url(r'^hijack/', include('hijack.urls')),

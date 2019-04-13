@@ -161,3 +161,5 @@ EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'no-reply@parks-lab.sakura.ne.jp'
 
+LOGIN_URL = 'manager:index.html'
+LOGIN_REDIRECT_URL = 'manager:mypage'
