@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
-from manager.models import UserAccount, Project, UserProfile
+from manager.models import UserAccount, Project, CategoryM
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -23,6 +23,10 @@ from django.views.decorators.csrf import csrf_protect
 
 import operator
 from functools import reduce
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+import random
 
 User = get_user_model()
 # Create your views here.
@@ -150,23 +154,77 @@ class UserCreateComplete(generic.TemplateView):
 
         return HttpResponseBadRequest()
 
-@csrf_protect
-def project_search(request):
-    """Search Projects"""
-    form = ProjectSearchForm()
-    projects = Project.objects.all()
-    if request.method == 'POST':
-        form = ProjectSearchForm(request.POST)
+def paginate_queryset(request, queryset, count):
+    """return a page object"""
+    #divide queryset into pages
+    paginator = Paginator(queryset, count)
+    #get the number of current page
+    page = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    return page_obj
+
+class ProjectIndex(generic.ListView):
+    model = Project
+    #number of items in one page
+    paginate_by = 10
+
+    @csrf_protect
+    def project_search(request):
+        """Search Projects"""
+        # create an empty form
+        form = ProjectSearchForm()
+        # fetch all data of projects
         projects = Project.objects.all()
+        # When the search button is pushed
+        if request.method == 'POST':
+            # fetch the form data
+            form = ProjectSearchForm(request.POST)
+            projects = Project.objects.all()
         if form.is_valid():
+            # split the inputed data into keywords
             keywords = form.cleaned_data['keyword'].split()
-            query_name = reduce(operator.and_, (Q(name__contains=keyword) for keyword in keywords))
-            query_detail = reduce(operator.and_, (Q(details__contains=keyword) for keyword in keywords))
-            query_all = query_name | query_detail
-            projects = Project.objects.filter(query_all)
+            # make query from keywords: "and" combination of (keyword1 in name or details)
+            query = reduce(operator.and_, ((Q(name__contains=keyword)|Q(details__contains=keyword)) for keyword in keywords))
+            # fetch the project data with the query
+            projects = Project.objects.filter(query)
+        # paging
+        page_obj = paginate_queryset(request, projects, ProjectIndex.paginate_by)
+        # generate the context
+        context = {
+            'form':form,
+            'page_obj':page_obj,
+        }
+        # render project_search.html with the fetched project data
+        return render(request,
+                      'project_search.html',
+                      context)
+    
+def project_explore(request):
+    return render(request, 'project_explore.html')
+
+def project_explore2(request):
+    categories = CategoryM.objects.all()
+    ExCategories = []
+    idbuf = 0
+    for category in categories:
+        ExCategories.append({"name":category.name,
+                             "left":random.uniform(0,800),
+                             "top":random.uniform(0,400),
+                             "radius":random.uniform(40,80),
+                             "id":idbuf
+                            })
+        idbuf = idbuf + 1
+    context = {
+        'categories':ExCategories,
+    }
     return render(request,
-                  'project_search.html',
-                  {'form':form, 'projects':projects})
+                  'project_explore2.html',
+                  context)
     
 class UserProfileView(generic.TemplateView):
     model = UserProfile

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'manager',
     'imagekit'
+    'sass_processor',
 ]
 
 MIDDLEWARE = [
@@ -167,3 +168,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
+#sass settings
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
+SASS_PROCESSOR_INCLUDE_FILE_PATTERN = r'^.+\.scss$'
+SASS_PRECISION = 8
+SASS_OUTPUT_STYLE = 'expanded'
+SASS_TEMPLATE_EXTS = ['.html', '.haml']

@@ -336,3 +336,9 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+class CategoryM(models.Model):
+    name = models.CharField(max_length=256)
+    related = models.ManyToManyField("CategoryM", blank=True)
+
+    def __str__(self):
+        return self.name

@@ -3,3 +3,6 @@ manager/__pycache__/
 parkslab/__pycache__/
 manager/migrations/
 media/
+manager/templates/.sass-cache/
+manager/static/css/.sass-cache/
+manager/templatetags/__pycache__/
