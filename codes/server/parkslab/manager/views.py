@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
-from manager.models import UserAccount, Project
+from manager.models import UserAccount, Project, UserProfile
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -168,3 +168,12 @@ def project_search(request):
                   'project_search.html',
                   {'form':form, 'projects':projects})
     
+class UserProfileView(generic.TemplateView):
+    model = UserProfile
+
+    def home(request, user_profile_id):
+        template_name = 'user_home.html'
+        user_profile = UserProfile.objects.get(id=user_profile_id)
+        context = {'user_profile': user_profile}
+        return render(request, template_name, context)
+

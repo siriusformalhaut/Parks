@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.utils.translation import ugettext_lazy as _
-from .models import UserAccount, Project
+from .models import UserAccount, UserProfile, Project, ProjectStatusM, Organization, OrganizationDivM
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -16,13 +16,13 @@ class MyUserChangeForm(UserChangeForm):
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = UserAccount
-        fields = ('email','name','display_name','birthday',)
+        fields = ('email','name',)
 
 
 class MyUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('name', 'display_name', 'birthday')}),
+        (_('Personal info'), {'fields': ('name',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'up_date')}),
@@ -35,11 +35,15 @@ class MyUserAdmin(UserAdmin):
     )
     form = MyUserChangeForm
     add_form = MyUserCreationForm
-    list_display = ('name', 'email', 'last_login', 'up_date')
+    list_display = ('id','name', 'email', 'last_login', 'up_date')
     list_filter = ('is_staff','is_superuser', 'is_active', 'groups')
-    search_fields = ('email', 'name', 'birthday')
-    ordering = ('name',)
+    search_fields = ('email',)
+    ordering = ('id',)
 
 
 admin.site.register(UserAccount, MyUserAdmin)
+admin.site.register(UserProfile)
 admin.site.register(Project)
+admin.site.register(ProjectStatusM)
+admin.site.register(Organization)
+admin.site.register(OrganizationDivM)
