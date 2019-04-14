@@ -9,11 +9,11 @@
 <div class="container">
     <div class="row justify-content-center align-items-center">
         <div class="col-1">
-            <img src="{% static 'image/logo.png' %}" class="img-fluid" alt="icon">
+            <img src="{{user_profile.image_thumbnail.url}}" class="img-fluid" alt="icon">
         </div>
         <div class="col-5">
             <div class="row" id="display_name">
-                <span>水谷　健</span>
+                <span>{{user_profile.user_account.display_name}}</span>
             </div>
             <div class="row" id="name_title">
                 <span>Parks, Inc. CEO </span>
