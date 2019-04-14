@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'manager',
-    'imagekit'
+    'imagekit',
     'sass_processor',
 ]
 
