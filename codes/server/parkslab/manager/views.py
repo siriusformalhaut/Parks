@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
-from manager.models import UserAccount, Project
+from manager.models import UserAccount, Project, CategoryM
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -25,6 +25,8 @@ import operator
 from functools import reduce
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+import random
 
 User = get_user_model()
 # Create your views here.
@@ -204,3 +206,22 @@ class ProjectIndex(generic.ListView):
     
 def project_explore(request):
     return render(request, 'project_explore.html')
+
+def project_explore2(request):
+    categories = CategoryM.objects.all()
+    ExCategories = []
+    idbuf = 0
+    for category in categories:
+        ExCategories.append({"name":category.name,
+                             "left":random.uniform(0,800),
+                             "top":random.uniform(0,400),
+                             "radius":random.uniform(40,80),
+                             "id":idbuf
+                            })
+        idbuf = idbuf + 1
+    context = {
+        'categories':ExCategories,
+    }
+    return render(request,
+                  'project_explore2.html',
+                  context)
