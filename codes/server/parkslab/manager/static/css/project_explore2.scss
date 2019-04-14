@@ -18,6 +18,14 @@
 		--web-view-id: custom___43;
 		--web-enable-deep-linking: true;
 		#______69{
+			opacity: 1;
+			position: absolute;
+			width: 864px;
+			height: 578.999px;
+			left: 118px;
+			top: 21px;
+			overflow: visible;
+			pointer-events: none;
 			.reset{
 				cursor: pointer;
 				pointer-events: visible;
@@ -39,6 +47,27 @@
 				font-weight: normal;
 				font-size: 17px;
 				color: rgba(0,255,176,1);
+			}
+			
+			#______________________________ {
+				opacity: 1;
+				position: absolute;
+				left: 0px;
+				top: 0px;
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+				overflow: visible;
+				width: 865px;
+				white-space: nowrap;
+				line-height: 33px;
+				margin-top: -0.5px;
+				text-align: center;
+				font-family: A-OTF UD Shin Go Pr6N;
+				font-style: normal;
+				font-weight: normal;
+				font-size: 32px;
+				color: rgba(255,255,255,1);
 			}
 			#_____A42_Text_18 {
 				opacity: 1;

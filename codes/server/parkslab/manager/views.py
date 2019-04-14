@@ -27,6 +27,7 @@ from functools import reduce
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import random
+import math
 
 User = get_user_model()
 # Create your views here.
@@ -211,11 +212,41 @@ def project_explore2(request):
     categories = CategoryM.objects.all()
     ExCategories = []
     idbuf = 0
+    Occupied = []
+    MaxHorizontal = 6
+    MaxVertical = 2
+    MaxRadius = 160
+    MaxDisplay = MaxHorizontal*MaxVertical
+    Passed = 0
+    CatLen = len(categories)
     for category in categories:
+        if CatLen-Passed > MaxDisplay:
+            if random.uniform(0,CatLen-Passed) > MaxDisplay:
+                Passed = Passed + 1
+                continue
+            if idbuf >= MaxDisplay:
+                break
+        for i in range(MaxDisplay):
+            radiusbuf = random.uniform(40,80)
+            leftbuf = random.uniform(0,MaxRadius*MaxHorizontal)
+            topbuf = random.uniform(100,100+MaxRadius*MaxVertical)
+            leftint = math.floor(leftbuf/MaxRadius)
+            topint = math.floor((topbuf-100)/MaxRadius)
+            posbuf = {
+                'left':leftint,
+                'top':topint,
+            }
+            if posbuf in Occupied:
+                continue
+            else:
+                Occupied.append(posbuf)
+                leftbuf = leftint*160 + random.uniform(radiusbuf,160-radiusbuf)
+                topbuf = topint*160 + random.uniform(100+radiusbuf, 260-radiusbuf)
+                break
         ExCategories.append({"name":category.name,
-                             "left":random.uniform(0,800),
-                             "top":random.uniform(0,400),
-                             "radius":random.uniform(40,80),
+                             "left":leftbuf,
+                             "top":topbuf,
+                             "radius":radiusbuf,
                              "id":idbuf
                             })
         idbuf = idbuf + 1
