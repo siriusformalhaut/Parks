@@ -16,13 +16,13 @@ class MyUserChangeForm(UserChangeForm):
 class MyUserCreationForm(UserCreationForm):
     class Meta:
         model = UserAccount
-        fields = ('email','name','display_name','birthday',)
+        fields = ('email','name',)
 
 
 class MyUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('name', 'display_name', 'birthday')}),
+        (_('Personal info'), {'fields': ('name',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'up_date')}),
@@ -35,10 +35,10 @@ class MyUserAdmin(UserAdmin):
     )
     form = MyUserChangeForm
     add_form = MyUserCreationForm
-    list_display = ('name', 'email', 'last_login', 'up_date')
+    list_display = ('id','name', 'email', 'last_login', 'up_date')
     list_filter = ('is_staff','is_superuser', 'is_active', 'groups')
-    search_fields = ('email', 'name', 'birthday')
-    ordering = ('name',)
+    search_fields = ('email',)
+    ordering = ('id',)
 
 
 admin.site.register(UserAccount, MyUserAdmin)
