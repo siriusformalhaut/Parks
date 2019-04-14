@@ -177,5 +177,3 @@ class UserProfileView(generic.TemplateView):
         context = {'user_profile': user_profile}
         return render(request, template_name, context)
 
-
-
