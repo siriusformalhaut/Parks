@@ -182,6 +182,13 @@ class ProjectIndex(generic.ListView):
         form = ProjectSearchForm()
         # fetch all data of projects
         projects = Project.objects.all()
+        # dictionary of projects and sort order
+        exprojects = []
+        for project in projects:
+            exprojects.append({
+                'project': project,
+                'numinclkeywords': 1
+            })
         # When the search button is pushed
         if request.method == 'POST':
             # fetch the form data
@@ -193,15 +200,14 @@ class ProjectIndex(generic.ListView):
             # make query from keywords: "and" combination of (keyword1 in name or details)
             query = reduce(operator.or_, ((Q(name__contains=keyword)|Q(details__contains=keyword)|Q(categories__name__contains=keyword)) for keyword in keywords))
             # fetch the project data with the query
-            projects = Project.objects.filter(query)
+            projects = list(set(Project.objects.filter(query)))
             # count how many keywords each project contains
+            exprojects.clear()
             for project in projects:
-                project.numinclkeywords = 0
-                project.save()
+                numinclkeywords = 0
                 for keyword in keywords:
                     if (keyword in project.name)|(keyword in project.details):
-                        project.numinclkeywords += 1
-                        project.save()
+                        numinclkeywords += 1
                     else:
                         ifkwincat = False
                         for category in project.categories.all():
@@ -209,10 +215,13 @@ class ProjectIndex(generic.ListView):
                                 ifkwincat = True
                                 break
                         if ifkwincat:
-                            project.numinclkeywords += 1
-                            project.save()
+                            numinclkeywords += 1
+                exprojects.append({
+                    'project': project,
+                    'numinclkeywords': numinclkeywords
+                })
         # sort projects
-        projects_sorted = projects.distinct().order_by('-numinclkeywords')
+        projects_sorted = sorted(exprojects, key=lambda x:x['numinclkeywords'], reverse=True)
         # paging
         page_obj = paginate_queryset(request, projects_sorted, ProjectIndex.paginate_by)
         # generate the context

@@ -113,7 +113,6 @@ class Project(models.Model):
     name = models.CharField(max_length=256)
     details = models.TextField()
     start_date = models.DateField()
-    numinclkeywords = models.IntegerField(blank=True, default=0)
     categories = models.ManyToManyField("CategoryM", blank=True)
 
     def __str__(self):

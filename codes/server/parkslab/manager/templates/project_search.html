@@ -33,9 +33,9 @@
 		<tbody>
 			{% for project in page_obj %}
 			<tr>
-				<td>{{ project.name }}</td>
-				<td>{{ project.users }}</td>
-				<td>{{ project.details }}</td>
+				<td>{{ project.project.name }}</td>
+				<td>{{ project.project.users }}</td>
+				<td>{{ project.project.details }}</td>
 				<td>{{ project.numinclkeywords }}</td>
 			</tr>
 			{% endfor %}
