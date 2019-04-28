@@ -183,9 +183,9 @@ class ProjectIndex(generic.ListView):
         # fetch all data of projects
         projects = Project.objects.all()
         # dictionary of projects and sort order
-        exprojects = []
+        ex_projects = []
         for project in projects:
-            exprojects.append({
+            ex_projects.append({
                 'project': project,
                 'numinclkeywords': 1
             })
@@ -202,7 +202,7 @@ class ProjectIndex(generic.ListView):
             # fetch the project data with the query
             projects = list(set(Project.objects.filter(query)))
             # count how many keywords each project contains
-            exprojects.clear()
+            ex_projects.clear()
             for project in projects:
                 numinclkeywords = 0
                 for keyword in keywords:
@@ -216,12 +216,12 @@ class ProjectIndex(generic.ListView):
                                 break
                         if ifkwincat:
                             numinclkeywords += 1
-                exprojects.append({
+                ex_projects.append({
                     'project': project,
                     'numinclkeywords': numinclkeywords
                 })
         # sort projects
-        projects_sorted = sorted(exprojects, key=lambda x:x['numinclkeywords'], reverse=True)
+        projects_sorted = sorted(ex_projects, key=lambda x:x['numinclkeywords'], reverse=True)
         # paging
         page_obj = paginate_queryset(request, projects_sorted, ProjectIndex.paginate_by)
         # generate the context

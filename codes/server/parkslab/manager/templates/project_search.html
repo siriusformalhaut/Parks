@@ -31,12 +31,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for project in page_obj %}
+			{% for ex_project in page_obj %}
 			<tr>
-				<td>{{ project.project.name }}</td>
-				<td>{{ project.project.users }}</td>
-				<td>{{ project.project.details }}</td>
-				<td>{{ project.numinclkeywords }}</td>
+				<td>{{ ex_project.project.name }}</td>
+				<td>{{ ex_project.project.users }}</td>
+				<td>{{ ex_project.project.details }}</td>
+				<td>{{ ex_project.numinclkeywords }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>
