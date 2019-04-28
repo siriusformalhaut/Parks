@@ -170,6 +170,7 @@ def paginate_queryset(request, queryset, count):
     return page_obj
 
 class ProjectIndex(generic.ListView):
+    """Search & Explore Projects"""
     model = Project
     #number of items in one page
     paginate_by = 10
@@ -190,11 +191,30 @@ class ProjectIndex(generic.ListView):
             # split the inputed data into keywords
             keywords = form.cleaned_data['keyword'].split()
             # make query from keywords: "and" combination of (keyword1 in name or details)
-            query = reduce(operator.and_, ((Q(name__contains=keyword)|Q(details__contains=keyword)) for keyword in keywords))
+            query = reduce(operator.or_, ((Q(name__contains=keyword)|Q(details__contains=keyword)|Q(categories__name__contains=keyword)) for keyword in keywords))
             # fetch the project data with the query
             projects = Project.objects.filter(query)
+            # count how many keywords each project contains
+            for project in projects:
+                project.numinclkeywords = 0
+                project.save()
+                for keyword in keywords:
+                    if (keyword in project.name)|(keyword in project.details):
+                        project.numinclkeywords += 1
+                        project.save()
+                    else:
+                        ifkwincat = False
+                        for category in project.categories.all():
+                            if keyword in category.name:
+                                ifkwincat = True
+                                break
+                        if ifkwincat:
+                            project.numinclkeywords += 1
+                            project.save()
+        # sort projects
+        projects_sorted = projects.distinct().order_by('-numinclkeywords')
         # paging
-        page_obj = paginate_queryset(request, projects, ProjectIndex.paginate_by)
+        page_obj = paginate_queryset(request, projects_sorted, ProjectIndex.paginate_by)
         # generate the context
         context = {
             'form':form,
@@ -204,55 +224,52 @@ class ProjectIndex(generic.ListView):
         return render(request,
                       'project_search.html',
                       context)
-    
-def project_explore(request):
-    return render(request, 'project_explore.html')
 
-def project_explore2(request):
-    categories = CategoryM.objects.all()
-    ExCategories = []
-    idbuf = 0
-    Occupied = []
-    MaxHorizontal = 6
-    MaxVertical = 2
-    MaxRadius = 160
-    MaxDisplay = MaxHorizontal*MaxVertical
-    Passed = 0
-    CatLen = len(categories)
-    for category in categories:
-        if CatLen-Passed > MaxDisplay:
-            if random.uniform(0,CatLen-Passed) > MaxDisplay:
-                Passed = Passed + 1
-                continue
-            if idbuf >= MaxDisplay:
-                break
-        for i in range(MaxDisplay):
-            radiusbuf = random.uniform(40,80)
-            leftbuf = random.uniform(0,MaxRadius*MaxHorizontal)
-            topbuf = random.uniform(100,100+MaxRadius*MaxVertical)
-            leftint = math.floor(leftbuf/MaxRadius)
-            topint = math.floor((topbuf-100)/MaxRadius)
-            posbuf = {
-                'left':leftint,
-                'top':topint,
-            }
-            if posbuf in Occupied:
-                continue
-            else:
-                Occupied.append(posbuf)
-                leftbuf = leftint*160 + random.uniform(radiusbuf,160-radiusbuf)
-                topbuf = topint*160 + random.uniform(100+radiusbuf, 260-radiusbuf)
-                break
-        ExCategories.append({"name":category.name,
-                             "left":leftbuf,
-                             "top":topbuf,
-                             "radius":radiusbuf,
-                             "id":idbuf
-                            })
-        idbuf = idbuf + 1
-    context = {
-        'categories':ExCategories,
-    }
-    return render(request,
-                  'project_explore2.html',
-                  context)
+    def project_explore(request):
+        return render(request, 'project_explore.html')
+
+    def project_explore2(request):
+        categories = CategoryM.objects.all()
+        ExCategories = []
+        idbuf = 0
+        Occupied = []
+        MaxHorizontal = 6
+        MaxVertical = 2
+        MaxRadius = 160
+        MaxDisplay = MaxHorizontal*MaxVertical
+        Passed = 0
+        CatLen = len(categories)
+
+        categories = paginate_queryset(request, categories, MaxDisplay)
+
+        for category in categories:
+            for i in range(MaxDisplay):
+                radiusbuf = random.uniform(40, 80)
+                leftbuf = random.uniform(0, MaxRadius*MaxHorizontal)
+                topbuf = random.uniform(100, 100+MaxRadius*MaxVertical)
+                leftint = math.floor(leftbuf/MaxRadius)
+                topint = math.floor((topbuf-100)/MaxRadius)
+                posbuf = {
+                          'left':leftint,
+                          'top':topint,
+                }
+                if posbuf in Occupied:
+                    continue
+                else:
+                    Occupied.append(posbuf)
+                    leftbuf = leftint*160 + random.uniform(radiusbuf, MaxRadius-radiusbuf)
+                    topbuf = topint*160 + 100 + random.uniform(radiusbuf, MaxRadius-radiusbuf)
+                    break
+            ExCategories.append({"name":category.name,
+                                 "left":leftbuf,
+                                 "top":topbuf,
+                                 "radius":radiusbuf,
+                                 "id":idbuf
+                                })
+            idbuf = idbuf + 1
+        context = {
+            'categories':ExCategories,
+        }
+        return render(request,
+                      'project_explore2.html',
+                      context)

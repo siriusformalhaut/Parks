@@ -27,6 +27,7 @@
 				<th scope="col">プロジェクト名</th>
 				<th scope="col">メンバー</th>
 				<th scope="col">概要</th>
+				<th scope="col">Debug</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -35,6 +36,7 @@
 				<td>{{ project.name }}</td>
 				<td>{{ project.users }}</td>
 				<td>{{ project.details }}</td>
+				<td>{{ project.numinclkeywords }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

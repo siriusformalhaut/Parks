@@ -46,7 +46,7 @@
             <div id="SmallWrapping{{ category.id }}" class = "SmallWrapping">
                 <div id="EllipseWrapping{{ category.id }}" class = "EllipseWrapping">
                     <svg class="____1 EllipseSVG">
-                        <ellipse id="EllipseInnter{{ category.id }}" class="EllipseInner" rx="{{ category.radius }}" ry="{{ category.radius }}" cx="{{ category.radius }}" cy="{{ category.radius }}">
+                        <ellipse id="EllipseInner{{ category.id }}" class="EllipseInner" rx="{{ category.radius }}" ry="{{ category.radius }}" cx="{{ category.radius }}" cy="{{ category.radius }}">
                         </ellipse>
                     </svg>
                 </div>
@@ -86,7 +86,11 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block additional-js %}
+
 <script type="text/javascript" src="{% static 'js/anime.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/project_explore.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/project_explore2.js' %}"></script>
 
 {% endblock %}
