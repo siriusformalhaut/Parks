@@ -105,6 +105,8 @@
 				left: 370px;
 				width: 124px;
 				height: 61.999px;
+				cursor: pointer;
+				pointer-events: visible;
 			}
 			#___A42_Text_19 {
 				opacity: 1;
@@ -158,25 +160,17 @@
 		.CatWrapping{
 			opacity: 1;
 			position: absolute;
-			//width: 87.328px;
-			//height: 87.328px;
-			//left: 211.852px;
-			//top: 389.186px;
 			overflow: visible;
 			cursor: pointer;
 			.SmallWrapping{
 				opacity: 1;
 				position: absolute;
-				//width: 87.328px;
-				//height: 87.328px;
 				left: 0px;
 				top: 0px;
 				overflow: visible;
 				.EllipseWrapping{
 					opacity: 1;
 					position: absolute;
-					//width: 87.328px;
-					//height: 87.328px;
 					left: 0px;
 					top: 0px;
 					overflow: visible;
@@ -196,8 +190,6 @@
 				.SVGWrapping{
 					opacity: 0.6;
 					position: absolute;
-					//width: 85.276px;
-					//height: 85.276px;
 					left: 1.025px;
 					top: 1.025px;
 					overflow: visible;
@@ -219,8 +211,6 @@
 			.NameWrapping{
 				opacity: 1;
 				position: absolute;
-				//left: 23.418px;
-				//top: 30.395px;
 				display: flex;
 				align-items: center;
 				justify-content: center;

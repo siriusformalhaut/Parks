@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div id="__" class="NameWrapping" style="width: {{ category.radius|times:2|minus:2.05 }}px; height: {{ category.radius|times:2|minus:2.05 }}px;">
-                <span>{{ category.name }}</span>
+                <span id="NameSpan{{ category.id }}" class="NameSpan">{{ category.name }}</span>
             </div>
         </div>
         {% endfor %}
@@ -72,13 +72,15 @@
             <div id="_____A42_Text_18" class="reset">
                 <span>元に戻す</span>
             </div>
-            <svg class="___1_A42_BooleanGroup_1" viewBox="-2374 -8524 124 61.999">
-                <path id="___1_A42_BooleanGroup_1" d="M -2373.999755859375 -8462.0009765625 C -2373.999755859375 -8496.2392578125 -2346.241943359375 -8524 -2312 -8524 C -2277.7578125 -8524 -2250 -8496.2392578125 -2250 -8462.0009765625 L -2373.999755859375 -8462.0009765625 Z">
-                </path>
-            </svg>
-            <div id="___A42_Text_19">
-                <span>次へ</span>
-            </div>
+            <a href="javascript:void(0)" id="aNext">
+                <svg class="___1_A42_BooleanGroup_1" viewBox="-2374 -8524 124 61.999">
+                    <path id="___1_A42_BooleanGroup_1" d="M -2373.999755859375 -8462.0009765625 C -2373.999755859375 -8496.2392578125 -2346.241943359375 -8524 -2312 -8524 C -2277.7578125 -8524 -2250 -8496.2392578125 -2250 -8462.0009765625 L -2373.999755859375 -8462.0009765625 Z">
+                    </path>
+                </svg>
+                <div id="___A42_Text_19">
+                    <span id="spanNext">次へ</span>
+                </div>
+            </a>
             <div id="ID1_4">
                 <span>1/4</span>
             </div>

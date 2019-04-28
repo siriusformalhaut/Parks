@@ -178,8 +178,15 @@ class ProjectIndex(generic.ListView):
     @csrf_protect
     def project_search(request):
         """Search Projects"""
+        # True if any keyword in the URL or the form exists
+        ifKeywordsExist = False    
+        # If URL contains '?keywords=xxx'
+        keywordsInUrl = request.GET.get('keywords')
+        if (keywordsInUrl != '')and(keywordsInUrl != None):
+            keywords = keywordsInUrl.split()
+            ifKeywordsExist = True
         # create an empty form
-        form = ProjectSearchForm()
+        form = ProjectSearchForm(initial = {'keyword' : keywordsInUrl})
         # fetch all data of projects
         projects = Project.objects.all()
         # dictionary of projects and sort order
@@ -194,9 +201,12 @@ class ProjectIndex(generic.ListView):
             # fetch the form data
             form = ProjectSearchForm(request.POST)
             projects = Project.objects.all()
+        # If the form is submitted
         if form.is_valid():
             # split the inputed data into keywords
             keywords = form.cleaned_data['keyword'].split()
+            ifKeywordsExist = True
+        if ifKeywordsExist == True:
             # make query from keywords: "and" combination of (keyword1 in name or details)
             query = reduce(operator.or_, ((Q(name__contains=keyword)|Q(details__contains=keyword)|Q(categories__name__contains=keyword)) for keyword in keywords))
             # fetch the project data with the query
@@ -233,9 +243,6 @@ class ProjectIndex(generic.ListView):
         return render(request,
                       'project_search.html',
                       context)
-
-    def project_explore(request):
-        return render(request, 'project_explore.html')
 
     def project_explore2(request):
         categories = CategoryM.objects.all()

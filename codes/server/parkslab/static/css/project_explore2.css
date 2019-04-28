@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
 }
+
 #explorefield #custom___43 {
   position: absolute;
   box-sizing: border-box;
@@ -17,6 +18,7 @@
   --web-view-id: custom___43;
   --web-enable-deep-linking: true;
 }
+
 #explorefield #custom___43 #______69 {
   opacity: 1;
   position: absolute;
@@ -27,10 +29,12 @@
   overflow: visible;
   pointer-events: none;
 }
+
 #explorefield #custom___43 #______69 .reset {
   cursor: pointer;
   pointer-events: visible;
 }
+
 #explorefield #custom___43 #______69 #_____A42_Text_16 {
   opacity: 1;
   position: absolute;
@@ -49,6 +53,7 @@
   font-size: 17px;
   color: #00ffb0;
 }
+
 #explorefield #custom___43 #______69 #______________________________ {
   opacity: 1;
   position: absolute;
@@ -69,6 +74,7 @@
   font-size: 32px;
   color: white;
 }
+
 #explorefield #custom___43 #______69 #_____A42_Text_18 {
   opacity: 1;
   position: absolute;
@@ -87,6 +93,7 @@
   font-size: 17px;
   color: #00ffb0;
 }
+
 #explorefield #custom___43 #______69 #___1_A42_BooleanGroup_1 {
   opacity: 1;
   fill: #00ffb0;
@@ -97,6 +104,7 @@
   stroke-miterlimit: 4;
   shape-rendering: auto;
 }
+
 #explorefield #custom___43 #______69 .___1_A42_BooleanGroup_1 {
   transform: matrix(1, 0, 0, 1, 0, 0);
   overflow: visible;
@@ -108,6 +116,7 @@
   cursor: pointer;
   pointer-events: visible;
 }
+
 #explorefield #custom___43 #______69 #___A42_Text_19 {
   opacity: 1;
   position: absolute;
@@ -126,6 +135,7 @@
   font-size: 24px;
   color: black;
 }
+
 #explorefield #custom___43 #______69 #ID1_4 {
   opacity: 1;
   position: absolute;
@@ -144,6 +154,7 @@
   font-size: 24px;
   color: white;
 }
+
 #explorefield #custom___43 .parks__________1 {
   position: absolute;
   overflow: visible;
@@ -152,16 +163,19 @@
   left: 0px;
   top: 0px;
 }
+
 #explorefield #custom___43 .parks__________1 #parks__________1 {
   opacity: 1;
   fill: url(#parks__________1_A42_Rectangle_2_pattern);
 }
+
 #explorefield #custom___43 .CatWrapping {
   opacity: 1;
   position: absolute;
   overflow: visible;
   cursor: pointer;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping {
   opacity: 1;
   position: absolute;
@@ -169,6 +183,7 @@
   top: 0px;
   overflow: visible;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping .EllipseWrapping {
   opacity: 1;
   position: absolute;
@@ -176,6 +191,7 @@
   top: 0px;
   overflow: visible;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping .EllipseWrapping .EllipseSVG {
   position: absolute;
   overflow: visible;
@@ -184,10 +200,12 @@
   left: 0px;
   top: 0px;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping .EllipseWrapping .EllipseSVG .EllipseInner {
   opacity: 1;
   fill: #333333;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping .SVGWrapping {
   opacity: 0.6;
   position: absolute;
@@ -195,6 +213,7 @@
   top: 1.025px;
   overflow: visible;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping .SVGWrapping .SVGInner {
   transform: matrix(1, 0, 0, 1, 0, 0);
   overflow: visible;
@@ -204,10 +223,12 @@
   width: 100%;
   height: 100%;
 }
+
 #explorefield #custom___43 .CatWrapping .SmallWrapping .SVGWrapping .SVGInner .SVGPath {
   opacity: 1;
   fill: #00ffb0;
 }
+
 #explorefield #custom___43 .CatWrapping .NameWrapping {
   opacity: 1;
   position: absolute;

@@ -1,22 +1,22 @@
 objects = document.getElementsByClassName('CatWrapping');
 explorefield = document.getElementById('explorefield');
-let leftbuffer = 0;
-let defaultleft = new Array();
-let defaulttop = new Array();
-let moved = new Array();
 
 for (let i = 0; i < objects.length; ++i){
-    moved[i] = false;
     objects[i].addEventListener('click', function()
     {
-        EllipseInner = $('#'+objects[i].id).children('EllipseInner')[0];
-        EllipseContext = EllipseInner.getContext('2d');
-        if(moved[i]){
-            EllipseContext.fillstyle = 'rgba(51,51,51,1)';
+        EllipseInner = objects[i].querySelector('.EllipseInner');
+        SVGPath = objects[i].querySelector('.SVGPath');
+        NameWrapping = objects[i].querySelector('.NameWrapping');
+        if(objects[i].selected == true){
+            EllipseInner.style.fill="rgba(51,51,51,1)";
+            SVGPath.style.fill="rgba(0,255,176,1)";
+            NameWrapping.style.color="rgba(0,255,176,1)";
         }else{
-            EllipseContext.fillstyle = 'rgba(0,255,176,1)';
+            EllipseInner.style.fill="rgba(0,255,176,1)";
+            SVGPath.style.fill="rgba(51,51,51,1)";
+            NameWrapping.style.color="rgba(51,51,51,1)";
         }
-        moved[i] = !moved[i];
+        objects[i].selected = !objects[i].selected;
     })
 }
 
@@ -24,16 +24,25 @@ ObjReset = document.getElementsByClassName('reset');
 ObjReset[0].addEventListener('click', function()
 {   
     for (let i = 0; i < objects.length; ++i){
-        if(moved[i]){
-            anime({
-                targets: '#'+objects[i].id,
-                duration: 500,
-                easing: 'linear',
-                left: defaultleft[i]-window.pageXOffset-explorefield.getBoundingClientRect().left,
-                top: defaulttop[i]-window.pageYOffset-explorefield.getBoundingClientRect().top
-            })
-            moved[i] = false;
+        EllipseInner = objects[i].querySelector('.EllipseInner');
+        SVGPath = objects[i].querySelector('.SVGPath');
+        NameWrapping = objects[i].querySelector('.NameWrapping');
+        EllipseInner.style.fill="rgba(51,51,51,1)";
+        SVGPath.style.fill="rgba(0,255,176,1)";
+        NameWrapping.style.color="rgba(0,255,176,1)";
+        objects[i].selected = false;
+    }
+})
+
+ObjNext = document.getElementById('aNext');
+ObjNext.addEventListener('click', function()
+{
+    keywords = "";
+    for (let i = 0; i < objects.length; ++i){
+        if (objects[i].selected){
+            NameSpan = objects[i].querySelector('.NameSpan');
+            keywords = keywords + " " + NameSpan.textContent;
         }
     }
-    leftbuffer = 0;
+    ObjNext.href = "/project/search/?keywords=" + keywords.trim();
 })
