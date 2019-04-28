@@ -17,14 +17,14 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls import include, url
+from django.contrib.auth import login
 
 import manager.views as manager_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path(r'', include('manager.urls')),
-    #url(r'^logout/', manager_view.logout_view),
-    #url(r'^worker_list/', login_required(manager_view.WorkerListView.as_view())),
+    url(r'', include('django.contrib.auth.urls')),
     url(r'^hijack/', include('hijack.urls')),
 ]
 
