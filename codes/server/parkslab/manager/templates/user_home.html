@@ -1,0 +1,70 @@
+{% extends "user_base.html" %}
+{% load staticfiles %}
+
+{% block additional-head %}
+{% load sass_tags %}
+<link rel="stylesheet" type="text/css" href="{% sass_src 'css/user_home.scss' %}" />
+<style id="applicationStylesheet" type="text/css">
+    {% for project in projects %}
+        #project-status-{{project.id}}{
+            background: {{project.project_status.icon_color}}
+        }
+    {% endfor %}
+</style>
+{% endblock %}
+
+{% block subbody %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-1"></div>
+        <div class="col-9">
+            <div class="row border mt-2" id="user_overview">
+                <span style="font-style:normal;font-weight:normal;">{{user_profile.details}}</span>
+            </div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="row">
+                        <span>プロジェクト</span>
+                        <a>詳しく見る</a>
+                    </div>
+                    <div class="row">
+                        {% for project in projects %}
+                        <div class="col-6 mt-2 project">
+                            <img class="project-img" src="{{project.image_middle.url}}" alt="{{project.name}}">
+                            <div class="project-head">
+                            </div>
+                            <div class="project-foot">
+                                <p>{{project.name}}</p>
+                            </div>
+                            <div class="project-status" id="project-status-{{project.id}}">
+                                {{project.project_status.project_status}}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <span>所属団体</span>
+                        <a>詳しく見る</a>
+                    </div>
+                    <div class="row">
+                        {% for organization in organizations %}
+                        <div class="col-12 mt-2 group">
+                            <img class="group-img mr-2" src="{{organization.image_middle.url}}" alt="{{organization.name}}">
+                            <span>{{organization.name}}</span>
+                        </div>
+                        {% endfor %}
+                        {% for organization in organizations_l %}
+                        <div class="col-12 mt-2 group">
+                            <span class="group-l">{{organization.name}}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>    
+{% endblock %}

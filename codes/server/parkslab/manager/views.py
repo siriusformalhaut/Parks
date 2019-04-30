@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
-from manager.models import UserAccount, Project, CategoryM
+from manager.models import UserAccount, Project, CategoryM, UserProfile
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -295,3 +295,19 @@ class ProjectExplore(generic.ListView):
         return render(request,
                       'project_explore2.html',
                       context)
+    
+class UserProfileView(generic.TemplateView):
+    model = UserProfile
+
+    def home(request, user_profile_id):
+        template_name = 'user_home.html'
+        user_profile = UserProfile.objects.get(id=user_profile_id)
+        projects = user_profile.project.all()
+        organizations = user_profile.organization.all()
+        organizations_l = user_profile.organization_light.all()
+        context = {'user_profile': user_profile,
+                    'projects': projects,
+                    'organizations': organizations,
+                    'organizations_l': organizations_l}
+        return render(request, template_name, context)
+

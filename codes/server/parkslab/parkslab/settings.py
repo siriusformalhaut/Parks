@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'manager',
+    'imagekit',
     'sass_processor',
 ]
 
@@ -161,6 +162,11 @@ EMAIL_HOST_PASSWORD = 'henjiha0#'
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'no-reply@parks-lab.sakura.ne.jp'
+
+# media setting
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 
 #sass settings
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')

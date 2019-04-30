@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}nantono page{% endblock %}
+{% load staticfiles %}
+
+{% block additional-head %}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-1">
+            <img src="{{user_profile.image_thumbnail.url}}" class="img-fluid" alt="icon">
+        </div>
+        <div class="col-5">
+            <div class="row" id="display_name">
+                <span>{{user_profile.display_name}}</span>
+            </div>
+            <div class="row" id="name_title">
+                <span>{{user_profile.title}}</span>
+                <span>プロジェクト {{ projects|length }}件</span>
+            </div>
+            <div class="row" id="outer_connection">
+                <a href="http://google.com">
+                    <img src="{% static 'image/logo.png' %}" alt="icon" height="20">                    
+                </a>
+                <a href="http://google.com">
+                    <img src="{% static 'image/logo.png' %}" alt="icon" height="20">                    
+                </a>
+            </div>
+        </div>
+        <div class="col-4">
+            <a class="btn" id="btn-home">ホーム</a>
+            <a class="btn" id="btn-organization">所属団体</a>
+            <a class="btn" id="btn-project">プロジェクト</a>
+        </div>
+    </div>
+</div>
+{% block subbody %}未定{% endblock %}
+{% endblock %}

@@ -1,0 +1,60 @@
+#user_overview{
+    height: 150px;
+}
+
+.project{
+    position: relative;
+
+    .project-img{
+        width: 100%;
+    }
+
+    .project-status{
+        position: absolute;
+        top: -5px;
+        left: 0;
+        font-size: 11px;
+        border-radius: 10px;
+        width: 30px;
+        text-align: center;
+    }
+    .project-head{
+        position: absolute;
+        top: 0;
+        left: 15px;
+        right: 15px;
+        padding: 5px;
+        color: white;
+        background: rgba(0,0,0,0.6);
+    }
+
+    .project-foot{
+        position: absolute;
+        bottom: 0;
+        left: 15px;
+        right: 15px;
+        padding: 5px;
+        color: white;
+        background: rgba(0,0,0,0.6);
+    }
+}
+
+.group{
+    position: relative;
+    color: white;
+    background: rgba(21,32,43,1);
+    height: 75px;
+    font-size: 18pt;
+
+    .group-img{
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 55px;
+    }
+
+    .group-l{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}

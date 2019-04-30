@@ -1,10 +1,14 @@
 from django.db import models
 from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.base_user import BaseUserManager
+from imagekit.models import ImageSpecField, ProcessedImageField
+from imagekit.processors import ResizeToFill
+import uuid, os
 
 
 class UserAccountManager(BaseUserManager):
@@ -12,7 +16,7 @@ class UserAccountManager(BaseUserManager):
 
     use_in_migrations = True
 
-    def _create_user(self, email, password, name, display_name, birthday, **extra_fields):
+    def _create_user(self, email, password, name, **extra_fields):
         """メールアドレスでの登録を必須にする"""
         if not email:
             raise ValueError('The given email must be set')
@@ -22,26 +26,20 @@ class UserAccountManager(BaseUserManager):
             raise ValueError('名前を入力してください')
         name = self.name
 
-        if not display_name:
-            raise ValueError('表示名を入力してください')
-
-        if not birthday:
-            raise ValueError('生年月日を入力してください')
-
         up_date = timezone.now()
 
-        user = self.model(email=email, name=name, display_name=display_name, birthday=birthday, up_date=up_date, **extra_fields)
+        user = self.model(email=email, name=name, up_date=up_date, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password, name, display_name, birthday, **extra_fields):
+    def create_user(self, email, password, name, **extra_fields):
         """is_staff(管理サイトにログインできるか)と、is_superuer(全ての権限)をFalseに"""
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, name, display_name, birthday, **extra_fields)
+        return self._create_user(email, password, name, **extra_fields)
 
-    def create_superuser(self, email, password, name, display_name, birthday, **extra_fields):
+    def create_superuser(self, email, password, name, **extra_fields):
         """スーパーユーザーは、is_staffとis_superuserをTrueに"""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -51,7 +49,7 @@ class UserAccountManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, password, name, display_name, birthday, **extra_fields)
+        return self._create_user(email, password, name, **extra_fields)
 
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
@@ -59,8 +57,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(_('email address'), unique=True)
     name = models.CharField(_('name'), max_length=128, blank=False)
-    display_name = models.CharField(_('display name'), max_length=128, blank=False)
-    birthday = models.DateField(_('birthday'), blank=False, default='2000-01-01')
 
     is_staff = models.BooleanField(
         _('staff status'),
@@ -83,7 +79,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'display_name', 'birthday',]
+    REQUIRED_FIELDS = ['name']
 
     class Meta:
         verbose_name = _('user')
@@ -93,7 +89,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.name
 
     def get_short_name(self):
-        return self.display_name
+        return self.name
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
@@ -108,12 +104,252 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         """
         return self.email
 
-class Project(models.Model):
-    users = models.ManyToManyField(UserAccount)
+class UserProfile(models.Model):
+    user_account = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
+    display_name = models.CharField(max_length=128, blank=False)
+    birthday = models.DateField(blank=False, default='2000-01-01')
+    details = models.TextField(blank=True)
+    homepage = models.URLField(blank=True)
+    title = models.CharField(max_length=128,blank=True)
+
+    def get_image_path(self, filename):
+        """カスタマイズした画像パスを取得する.
+
+        :param self: インスタンス (models.Model)
+        :param filename: 元ファイル名
+        :return: カスタマイズしたファイル名を含む画像パス
+        """
+        prefix = 'user_profile/'
+        name = str(uuid.uuid4()).replace('-', '')
+        extension = os.path.splitext(filename)[-1]
+        return prefix + name + extension
+
+    def delete_previous_file(function):
+        """不要となる古いファイルを削除する為のデコレータ実装.
+
+        :param function: メイン関数
+        :return: wrapper
+        """
+        def wrapper(*args, **kwargs):
+            """Wrapper 関数.
+
+            :param args: 任意の引数
+            :param kwargs: 任意のキーワード引数
+            :return: メイン関数実行結果
+            """
+            self = args[0]
+
+            # 保存前のファイル名を取得
+            result = UserProfile.objects.filter(pk=self.pk)
+            previous = result[0] if len(result) else None
+            super(UserProfile, self).save()
+
+            # 関数実行
+            result = function(*args, **kwargs)
+
+            # 保存前のファイルがあったら削除
+            if previous:
+                file_path = settings.MEDIA_ROOT + '/' + previous.image_origin.name
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+
+            return result
+        return wrapper
+
+    @delete_previous_file
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(UserProfile, self).save()
+
+    @delete_previous_file
+    def delete(self, using=None, keep_parents=False):
+        super(UserProfile, self).delete()
+
+    image_origin = models.ImageField(_('image_origin'), upload_to=get_image_path, blank=True)
+    image_thumbnail = ImageSpecField(source='image_origin',
+                            processors=[ResizeToFill(250,250)],
+                            format="JPEG",
+                            options={'quality': 60}
+                            )
+
+    image_middle = ImageSpecField(source='image_origin',
+                        processors=[ResizeToFill(400, 400)],
+                        format="JPEG",
+                        options={'quality': 75}
+                        )
+
+    def __str__(self):
+        return self.display_name
+
+class OrganizationDivM(models.Model):
+    name = models.CharField(max_length=7)
+
+    def __str__(self):
+        return self.name
+
+class Organization(models.Model):
+    member = models.ManyToManyField(UserProfile, related_name="organization")
     name = models.CharField(max_length=256)
-    details = models.TextField()
+    organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.PROTECT)
+    details = models.TextField(blank=True)
+    homepage = models.URLField(blank=True)
+    email = models.EmailField(blank=True)
+
+    def get_image_path(self, filename):
+        """カスタマイズした画像パスを取得する.
+
+        :param self: インスタンス (models.Model)
+        :param filename: 元ファイル名
+        :return: カスタマイズしたファイル名を含む画像パス
+        """
+        prefix = 'organization/'
+        name = str(uuid.uuid4()).replace('-', '')
+        extension = os.path.splitext(filename)[-1]
+        return prefix + name + extension
+
+    def delete_previous_file(function):
+        """不要となる古いファイルを削除する為のデコレータ実装.
+
+        :param function: メイン関数
+        :return: wrapper
+        """
+        def wrapper(*args, **kwargs):
+            """Wrapper 関数.
+
+            :param args: 任意の引数
+            :param kwargs: 任意のキーワード引数
+            :return: メイン関数実行結果
+            """
+            self = args[0]
+
+            # 保存前のファイル名を取得
+            result = Organization.objects.filter(pk=self.pk)
+            previous = result[0] if len(result) else None
+            super(Organization, self).save()
+
+            # 関数実行
+            result = function(*args, **kwargs)
+
+            # 保存前のファイルがあったら削除
+            if previous:
+                file_path = settings.MEDIA_ROOT + '/' + previous.image_origin.name
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            return result
+        return wrapper
+
+    @delete_previous_file
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(Organization, self).save()
+
+    @delete_previous_file
+    def delete(self, using=None, keep_parents=False):
+        super(Organization, self).delete()
+
+    image_origin = models.ImageField(_('image_origin'), upload_to=get_image_path, blank=True)
+    image_thumbnail = ImageSpecField(source='image_origin',
+                            processors=[ResizeToFill(250,250)],
+                            format="JPEG",
+                            options={'quality': 60}
+                            )
+
+    image_middle = ImageSpecField(source='image_origin',
+                        processors=[ResizeToFill(400, 400)],
+                        format="JPEG",
+                        options={'quality': 75}
+                        )
+
+    def __str__(self):
+        return self.name
+
+class OrganizationLight(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="organization_light")
+    name = models.CharField(max_length=256)
+    organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.PROTECT)
+    homepage = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class ProjectStatusM(models.Model):
+    project_status = models.CharField(max_length=4)
+    icon_color = models.CharField(max_length=7)
+
+    def __str__(self):
+        return self.project_status
+
+class Project(models.Model):
+    users = models.ManyToManyField(UserProfile, related_name="project")
+    name = models.CharField(max_length=256)
+    details = models.TextField(blank=True)
     start_date = models.DateField()
     categories = models.ManyToManyField("CategoryM", blank=True)
+    project_status = models.ForeignKey(ProjectStatusM, on_delete=models.PROTECT)
+    homepage = models.URLField(blank=True)
+    email = models.EmailField(blank=True)
+
+    def get_image_path(self, filename):
+        """カスタマイズした画像パスを取得する.
+
+        :param self: インスタンス (models.Model)
+        :param filename: 元ファイル名
+        :return: カスタマイズしたファイル名を含む画像パス
+        """
+        prefix = 'project/'
+        name = str(uuid.uuid4()).replace('-', '')
+        extension = os.path.splitext(filename)[-1]
+        return prefix + name + extension
+
+    def delete_previous_file(function):
+        """不要となる古いファイルを削除する為のデコレータ実装.
+
+        :param function: メイン関数
+        :return: wrapper
+        """
+        def wrapper(*args, **kwargs):
+            """Wrapper 関数.
+
+            :param args: 任意の引数
+            :param kwargs: 任意のキーワード引数
+            :return: メイン関数実行結果
+            """
+            self = args[0]
+
+            # 保存前のファイル名を取得
+            result = Project.objects.filter(pk=self.pk)
+            previous = result[0] if len(result) else None
+            super(Project, self).save()
+
+            # 関数実行
+            result = function(*args, **kwargs)
+
+            # 保存前のファイルがあったら削除
+            if previous:
+                file_path = settings.MEDIA_ROOT + '/' + previous.image_origin.name
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            return result
+        return wrapper
+
+    @delete_previous_file
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super(Project, self).save()
+
+    @delete_previous_file
+    def delete(self, using=None, keep_parents=False):
+        super(Project, self).delete()
+
+    image_origin = models.ImageField(_('image_origin'), upload_to=get_image_path, blank=True)
+    image_thumbnail = ImageSpecField(source='image_origin',
+                            processors=[ResizeToFill(250,250)],
+                            format="JPEG",
+                            options={'quality': 60}
+                            )
+
+    image_middle = ImageSpecField(source='image_origin',
+                        processors=[ResizeToFill(400, 400)],
+                        format="JPEG",
+                        options={'quality': 75}
+                        )
 
     def __str__(self):
         return self.name
