@@ -21,15 +21,25 @@
 		<nav class="navbar navbar-expand-lg navbar-light bg-light static-top">
 			<div class="container">
 				<a class="navbar-brand" href="{% url 'manager:index' %}">
-					<img id="parksLogo" src="{% static 'image/logo.png' %}" height="50" alt="Parksロゴ" />
-					<img id="parksSign" src="{% static 'image/sign.png' %}" height="50" alt="Parks" />
+					<img id="parksLogo" src="{% static 'image/gyroscope.png' %}" height="50" alt="Parksロゴ" />
+					<img id="parksSign" src="{% static 'image/JoiRePa.png' %}" height="50" alt="Parks" />
 				</a>
+				{% if user.is_authenticated %}
+				<form class="form-inline" action="/project/search/" method="POST">
+					{% csrf_token %}
+                    {{ searchform }}
+                    <input type="image" src="{% static 'image/icon_search.png' %}">
+				</form>
+				<img id="userIcon" src="{{ user.image }}" height="50" alt="ユーザアイコン" />
+				<span>{{ user.display_name }}</span>
+				{% else %}
 				<form class="form-inline">
 					<input class="form-control mr-sm-2" type="email" placeholder="Email" aria-label="Email">
 					<input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
 					<button class="btn btn-success mr-sm-2" type="submit">ログイン</button>
 					<a class="btn btn-warning my-2 my-sm-0" href="{% url 'manager:user_create' %}" role="button">新規登録</a>
 				</form>
+				{% endif %}
 				<div>
 					<a class="btn btn-outline-danger btn-sm" href="#" role="button">日本語</a>
 					<a class="btn btn-outline-primary btn-sm" href="#" role="button">English</a>

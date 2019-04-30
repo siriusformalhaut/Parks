@@ -37,6 +37,7 @@ class AccountListView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = super(AccountListView, self).get_context_data(**kwargs)
+        context["searchform"] = ProjectSearchForm()
         return render(self.request, self.template_name, context)
     
     def post(self, _, *args, **kwargs):
@@ -169,8 +170,8 @@ def paginate_queryset(request, queryset, count):
         page_obj = paginator.page(paginator.num_pages)
     return page_obj
 
-class ProjectIndex(generic.ListView):
-    """Search & Explore Projects"""
+class ProjectSearch(generic.ListView):
+    """Search Projects"""
     model = Project
     #number of items in one page
     paginate_by = 10
@@ -179,7 +180,7 @@ class ProjectIndex(generic.ListView):
     def project_search(request):
         """Search Projects"""
         # True if any keyword in the URL or the form exists
-        ifKeywordsExist = False    
+        ifKeywordsExist = False
         # If URL contains '?keywords=xxx'
         keywordsInUrl = request.GET.get('keywords')
         if (keywordsInUrl != '')and(keywordsInUrl != None):
@@ -233,16 +234,20 @@ class ProjectIndex(generic.ListView):
         # sort projects
         projects_sorted = sorted(ex_projects, key=lambda x:x['numinclkeywords'], reverse=True)
         # paging
-        page_obj = paginate_queryset(request, projects_sorted, ProjectIndex.paginate_by)
+        page_obj = paginate_queryset(request, projects_sorted, ProjectSearch.paginate_by)
         # generate the context
         context = {
-            'form':form,
+            'searchform':form,
             'page_obj':page_obj,
         }
         # render project_search.html with the fetched project data
         return render(request,
                       'project_search.html',
                       context)
+
+class ProjectExplore(generic.ListView):
+    """Explore Projects"""
+    model = Project
 
     def project_explore2(request):
         categories = CategoryM.objects.all()
@@ -285,6 +290,7 @@ class ProjectIndex(generic.ListView):
             idbuf = idbuf + 1
         context = {
             'categories':ExCategories,
+            'searchform':ProjectSearchForm()
         }
         return render(request,
                       'project_explore2.html',
