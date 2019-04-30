@@ -232,6 +232,12 @@ class UserProfileView(generic.TemplateView):
     def home(request, user_profile_id):
         template_name = 'user_home.html'
         user_profile = UserProfile.objects.get(id=user_profile_id)
-        context = {'user_profile': user_profile}
+        projects = user_profile.project.all()
+        organizations = user_profile.organization.all()
+        organizations_l = user_profile.organization_light.all()
+        context = {'user_profile': user_profile,
+                    'projects': projects,
+                    'organizations': organizations,
+                    'organizations_l': organizations_l}
         return render(request, template_name, context)
 

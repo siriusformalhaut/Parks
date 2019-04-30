@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
@@ -148,7 +149,10 @@ class UserProfile(models.Model):
 
             # 保存前のファイルがあったら削除
             if previous:
-                os.remove(MEDIA_ROOT + '/' + previous.image.name)
+                file_path = settings.MEDIA_ROOT + '/' + previous.image_origin.name
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+
             return result
         return wrapper
 
@@ -183,9 +187,9 @@ class OrganizationDivM(models.Model):
         return self.name
 
 class Organization(models.Model):
-    member = models.ManyToManyField(UserAccount)
+    member = models.ManyToManyField(UserProfile, related_name="organization")
     name = models.CharField(max_length=256)
-    organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.CASCADE)
+    organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.PROTECT)
     details = models.TextField(blank=True)
     homepage = models.URLField(blank=True)
     email = models.EmailField(blank=True)
@@ -227,7 +231,9 @@ class Organization(models.Model):
 
             # 保存前のファイルがあったら削除
             if previous:
-                os.remove(MEDIA_ROOT + '/' + previous.image.name)
+                file_path = settings.MEDIA_ROOT + '/' + previous.image_origin.name
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
             return result
         return wrapper
 
@@ -255,6 +261,15 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
+class OrganizationLight(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="organization_light")
+    name = models.CharField(max_length=256)
+    organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.PROTECT)
+    homepage = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.name
+
 class ProjectStatusM(models.Model):
     project_status = models.CharField(max_length=4)
     icon_color = models.CharField(max_length=7)
@@ -263,11 +278,11 @@ class ProjectStatusM(models.Model):
         return self.project_status
 
 class Project(models.Model):
-    users = models.ManyToManyField(UserAccount)
+    users = models.ManyToManyField(UserProfile, related_name="project")
     name = models.CharField(max_length=256)
     details = models.TextField(blank=True)
     start_date = models.DateField()
-    project_status = models.ForeignKey(ProjectStatusM, on_delete=models.CASCADE)
+    project_status = models.ForeignKey(ProjectStatusM, on_delete=models.PROTECT)
     homepage = models.URLField(blank=True)
     email = models.EmailField(blank=True)
 
@@ -308,7 +323,9 @@ class Project(models.Model):
 
             # 保存前のファイルがあったら削除
             if previous:
-                os.remove(MEDIA_ROOT + '/' + previous.image.name)
+                file_path = settings.MEDIA_ROOT + '/' + previous.image_origin.name
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
             return result
         return wrapper
 
