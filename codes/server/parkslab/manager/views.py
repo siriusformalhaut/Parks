@@ -37,7 +37,7 @@ class AccountListView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = super(AccountListView, self).get_context_data(**kwargs)
-        context["searchform"] = ProjectSearchForm()
+        context["search_form"] = ProjectSearchForm()
         return render(self.request, self.template_name, context)
     
     def post(self, _, *args, **kwargs):
@@ -237,7 +237,7 @@ class ProjectSearch(generic.ListView):
         page_obj = paginate_queryset(request, projects_sorted, ProjectSearch.paginate_by)
         # generate the context
         context = {
-            'searchform':form,
+            'search_form':form,
             'page_obj':page_obj,
         }
         # render project_search.html with the fetched project data
@@ -290,7 +290,7 @@ class ProjectExplore(generic.ListView):
             idbuf = idbuf + 1
         context = {
             'categories':ExCategories,
-            'searchform':ProjectSearchForm()
+            'search_form':ProjectSearchForm()
         }
         return render(request,
                       'project_explore2.html',

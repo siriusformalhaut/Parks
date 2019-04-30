@@ -27,7 +27,7 @@
 				{% if user.is_authenticated %}
 				<form class="form-inline" action="/project/search/" method="POST">
 					{% csrf_token %}
-                    {{ searchform }}
+                    {{ search_form }}
                     <input type="image" src="{% static 'image/icon_search.png' %}">
 				</form>
 				<img id="userIcon" src="{{ user.image }}" height="50" alt="ユーザアイコン" />
