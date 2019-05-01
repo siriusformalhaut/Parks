@@ -151,17 +151,18 @@ AUTHENTICATION_BACKENDS = (
 
 AUTH_USER_MODEL = 'manager.UserAccount'
 
-# display e-mail in console
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# display e-mail in console (for debug)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # e-mail setting
-EMAIL_HOST = 'parks-lab.sakura.ne.jp'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@parks-lab.sakura.ne.jp'
-EMAIL_HOST_PASSWORD = 'henjiha0#'
-EMAIL_USE_TLS = True
 
-DEFAULT_FROM_EMAIL = 'no-reply@parks-lab.sakura.ne.jp'
+#EMAIL_HOST = ''
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = ''
+#EMAIL_HOST_PASSWORD = ''
+#EMAIL_USE_TLS = True
+
+#DEFAULT_FROM_EMAIL = ''
 
 # media setting
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

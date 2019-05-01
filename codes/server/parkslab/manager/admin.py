@@ -4,18 +4,18 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.utils.translation import ugettext_lazy as _
-from .models import UserAccount, UserProfile, Project, ProjectStatusM, Organization, OrganizationDivM, OrganizationLight, CategoryM
+from manager import models as m
 
 
 class MyUserChangeForm(UserChangeForm):
     class Meta:
-        model = UserAccount
+        model = m.UserAccount
         fields = '__all__'
 
 
 class MyUserCreationForm(UserCreationForm):
     class Meta:
-        model = UserAccount
+        model = m.UserAccount
         fields = ('email','name',)
 
 
@@ -41,11 +41,14 @@ class MyUserAdmin(UserAdmin):
     ordering = ('id',)
 
 
-admin.site.register(UserAccount, MyUserAdmin)
-admin.site.register(UserProfile)
-admin.site.register(Project)
-admin.site.register(ProjectStatusM)
-admin.site.register(Organization)
-admin.site.register(OrganizationDivM)
-admin.site.register(OrganizationLight)
-admin.site.register(CategoryM)
+admin.site.register(m.UserAccount, MyUserAdmin)
+admin.site.register(m.UserProfile)
+admin.site.register(m.Project)
+admin.site.register(m.ProjectStatusM)
+admin.site.register(m.Organization)
+admin.site.register(m.OrganizationDivM)
+admin.site.register(m.OrganizationLight)
+admin.site.register(m.CategoryM)
+admin.site.register(m.BulletinBoard)
+admin.site.register(m.BulletinBoardThread)
+admin.site.register(m.BulletinBoardMessage)

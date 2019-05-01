@@ -53,7 +53,7 @@ class UserAccountManager(BaseUserManager):
 
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
-    """カスタムユーザーモデル."""
+    """カスタムユーザーモデル.(Parks共通)"""
 
     email = models.EmailField(_('email address'), unique=True)
     name = models.CharField(_('name'), max_length=128, blank=False)
@@ -105,8 +105,19 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class UserProfile(models.Model):
+    """ユーザー情報(JoiRePa用)
+
+    user_account: Parks共通アカとの紐付け
+    display_name: 表示用名前
+    birthday: 誕生日
+    details: ユーザー詳細
+    homepage: ホームページ
+    title: 肩書き
+    image_origin: プロフィール画像　アップロード保存
+    image_thumnail,middle: プロフィール画像　表示用
+    """
     user_account = models.OneToOneField(UserAccount, on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=128, blank=False)
+    display_name = models.CharField(max_length=128, blank=False, default=user_account.name)
     birthday = models.DateField(blank=False, default='2000-01-01')
     details = models.TextField(blank=True)
     homepage = models.URLField(blank=True)
@@ -125,7 +136,7 @@ class UserProfile(models.Model):
         return prefix + name + extension
 
     def delete_previous_file(function):
-        """不要となる古いファイルを削除する為のデコレータ実装.
+        """不要となる古いファイルを削除する為のデコレータ実装.(未検証)
 
         :param function: メイン関数
         :return: wrapper
@@ -181,12 +192,23 @@ class UserProfile(models.Model):
         return self.display_name
 
 class OrganizationDivM(models.Model):
+    """所属団体区分マスタ(企業・研究室)"""
     name = models.CharField(max_length=7)
 
     def __str__(self):
         return self.name
 
 class Organization(models.Model):
+    """所属団体
+
+    member: 参加メンバー
+    name: 団体名
+    organization_div: 所属団体区分
+    details: 詳細
+    homepage: 団体HPリンク先
+    email: 団体連絡先Email
+    image_xxx: サムネイル画像
+    """
     member = models.ManyToManyField(UserProfile, related_name="organization")
     name = models.CharField(max_length=256)
     organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.PROTECT)
@@ -207,7 +229,7 @@ class Organization(models.Model):
         return prefix + name + extension
 
     def delete_previous_file(function):
-        """不要となる古いファイルを削除する為のデコレータ実装.
+        """不要となる古いファイルを削除する為のデコレータ実装.(未検証)
 
         :param function: メイン関数
         :return: wrapper
@@ -262,6 +284,7 @@ class Organization(models.Model):
         return self.name
 
 class OrganizationLight(models.Model):
+    """JoiRePaには正式登録してない、一時的な団体名登録用"""
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="organization_light")
     name = models.CharField(max_length=256)
     organization_div = models.ForeignKey(OrganizationDivM, on_delete=models.PROTECT)
@@ -271,6 +294,9 @@ class OrganizationLight(models.Model):
         return self.name
 
 class ProjectStatusM(models.Model):
+    """プロジェクトステータスマスタ(急募、実績etc)
+    icon_color: 表示アイコンの背景色(ex:#00ffff)
+    """
     project_status = models.CharField(max_length=4)
     icon_color = models.CharField(max_length=7)
 
@@ -278,6 +304,17 @@ class ProjectStatusM(models.Model):
         return self.project_status
 
 class Project(models.Model):
+    """プロジェクト
+    users: 参加メンバー
+    name: プロジェクト名
+    details: プロジェクト詳細
+    start_date: プロジェクト開始日付
+    project_status: ステータス
+    homepage: プロジェクトHPリンク
+    email: Email
+    organization(_l): 参加団体
+    image_xxx: サムネイル画像
+    """
     users = models.ManyToManyField(UserProfile, related_name="project")
     name = models.CharField(max_length=256)
     details = models.TextField(blank=True)
@@ -285,6 +322,8 @@ class Project(models.Model):
     project_status = models.ForeignKey(ProjectStatusM, on_delete=models.PROTECT)
     homepage = models.URLField(blank=True)
     email = models.EmailField(blank=True)
+    organization = models.ManyToManyField(Organization, related_name="organization", blank=True)
+    organization_l = models.ManyToManyField(OrganizationLight, related_name="organization_l", blank=True)
 
     def get_image_path(self, filename):
         """カスタマイズした画像パスを取得する.
@@ -299,7 +338,7 @@ class Project(models.Model):
         return prefix + name + extension
 
     def delete_previous_file(function):
-        """不要となる古いファイルを削除する為のデコレータ実装.
+        """不要となる古いファイルを削除する為のデコレータ実装.(未検証)
 
         :param function: メイン関数
         :return: wrapper
@@ -359,3 +398,44 @@ class CategoryM(models.Model):
 
     def __str__(self):
         return self.name
+
+class BulletinBoard(models.Model):
+    """掲示板　スレッドの紐付け先"""
+    user = models.OneToOneField("UserProfile", null=True, blank=True, on_delete=models.CASCADE, related_name="bulletin_board_u")
+    organization = models.OneToOneField("Organization", null=True, blank=True, on_delete=models.CASCADE, related_name="bulletin_board_o")
+    project = models.OneToOneField("Project", null=True, blank=True, on_delete=models.CASCADE, related_name="bulletin_board_p")
+
+    def __str__(self):
+        name = ""
+        if self.user is not None:
+            name = self.user.display_name
+        elif self.organization is not None:
+            name = self.organization.name
+        elif self.project is not None:
+            name = self.project.name
+        else:
+            return "N/A"
+
+        if self.id:
+            return "掲示板/" + str(self.id) + "/" + name 
+        else:
+            return "掲示板/" + name 
+
+
+class BulletinBoardThread(models.Model):
+    """掲示板スレッド　コメント紐付け先"""
+    parent_board = models.ManyToManyField("BulletinBoard",
+                                            blank=True,
+                                            related_name="child_thread")
+    create_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(default=timezone.now)
+
+class BulletinBoardMessage(models.Model):
+    """掲示板コメント"""
+    thread = models.ForeignKey("BulletinBoardThread", on_delete=models.CASCADE, related_name="child_message")
+    seq_no = models.IntegerField()
+    sender = models.ForeignKey("UserProfile", on_delete=models.CASCADE, related_name="send_message")
+    message = models.CharField(max_length=500)
+    send_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
+

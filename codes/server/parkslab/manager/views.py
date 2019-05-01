@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate
-from manager.models import UserAccount, Project, CategoryM, UserProfile
-
+from manager.models import (
+    UserAccount, Project, CategoryM, UserProfile
+)
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -229,15 +230,31 @@ def project_explore2(request):
 class UserProfileView(generic.TemplateView):
     model = UserProfile
 
+    # user_profile_idで指定した個人の情報ひたすたかき集める
     def home(request, user_profile_id):
         template_name = 'user_home.html'
         user_profile = UserProfile.objects.get(id=user_profile_id)
+        list_projects = []
         projects = user_profile.project.all()
+        for project in projects:
+            participating_organizations = project.organization.all()
+            list_projects.append({'project_main': project,
+                                    'participating_organizations': participating_organizations})
+
         organizations = user_profile.organization.all()
         organizations_l = user_profile.organization_light.all()
+        board = user_profile.bulletin_board_u
+        list_threads = []
+        threads = board.child_thread.all()
+        for thread in threads:
+            messages = thread.child_message.all()
+            list_threads.append({'thread_main': thread,
+                                    'messages': messages})
+
         context = {'user_profile': user_profile,
-                    'projects': projects,
+                    'projects': list_projects,
                     'organizations': organizations,
-                    'organizations_l': organizations_l}
+                    'organizations_l': organizations_l,
+                    'threads':  list_threads}
         return render(request, template_name, context)
 
