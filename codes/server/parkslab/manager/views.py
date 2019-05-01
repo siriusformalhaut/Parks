@@ -249,38 +249,48 @@ class ProjectExplore(generic.ListView):
     """Explore Projects"""
     model = Project
 
-    def project_explore2(request):
+    def project_explore(request):
         categories = CategoryM.objects.all()
+        # list of dic of category name + position + id
         ExCategories = []
+        # category id in the html
         idbuf = 0
+        # list of occupied space
         Occupied = []
+        # number of spaces
         MaxHorizontal = 6
         MaxVertical = 2
-        MaxRadius = 160
         MaxDisplay = MaxHorizontal*MaxVertical
-        Passed = 0
+        # max diameter of category circles
+        MaxDiameter = 160
+        # the length of category list
         CatLen = len(categories)
 
+        # pagination
         categories = paginate_queryset(request, categories, MaxDisplay)
 
         for category in categories:
             for i in range(MaxDisplay):
                 radiusbuf = random.uniform(40, 80)
-                leftbuf = random.uniform(0, MaxRadius*MaxHorizontal)
-                topbuf = random.uniform(100, 100+MaxRadius*MaxVertical)
-                leftint = math.floor(leftbuf/MaxRadius)
-                topint = math.floor((topbuf-100)/MaxRadius)
+                leftbuf = random.uniform(0, MaxDiameter*MaxHorizontal)
+                topbuf = random.uniform(100, 100+MaxDiameter*MaxVertical)
+                leftint = math.floor(leftbuf/MaxDiameter)
+                topint = math.floor((topbuf-100)/MaxDiameter)
                 posbuf = {
                           'left':leftint,
                           'top':topint,
                 }
+                # until posbuf stands for an empty space
                 if posbuf in Occupied:
                     continue
                 else:
+                    # add the space in Occupied list
                     Occupied.append(posbuf)
-                    leftbuf = leftint*160 + random.uniform(radiusbuf, MaxRadius-radiusbuf)
-                    topbuf = topint*160 + 100 + random.uniform(radiusbuf, MaxRadius-radiusbuf)
+                    # determine the position of the circle within the space
+                    leftbuf = leftint*160 + random.uniform(radiusbuf, MaxDiameter-radiusbuf)
+                    topbuf = topint*160 + 100 + random.uniform(radiusbuf, MaxDiameter-radiusbuf)
                     break
+            # record the data in Extended Categories diclist
             ExCategories.append({"name":category.name,
                                  "left":leftbuf,
                                  "top":topbuf,
@@ -288,12 +298,13 @@ class ProjectExplore(generic.ListView):
                                  "id":idbuf
                                 })
             idbuf = idbuf + 1
+        # generate the context from ExCategories and a form to search projects
         context = {
             'categories':ExCategories,
             'search_form':ProjectSearchForm()
         }
         return render(request,
-                      'project_explore2.html',
+                      'project_explore.html',
                       context)
     
 class UserProfileView(generic.TemplateView):

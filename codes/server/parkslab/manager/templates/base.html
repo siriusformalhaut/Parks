@@ -30,7 +30,7 @@
                     {{ search_form }}
                     <input type="image" src="{% static 'image/icon_search.png' %}">
 				</form>
-				<img id="userIcon" src="{{ user.image }}" height="50" alt="ユーザアイコン" />
+				<img id="userIcon" src="{{ user.image_thumbnail.url }}" height="50" alt="ユーザアイコン" />
 				<span>{{ user.display_name }}</span>
 				{% else %}
 				<form class="form-inline">
@@ -78,7 +78,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
-					<a href="https://mizutaniken1992.wixsite.com/parks" target="_blank">Parks, Inc.</a>
+					<a href="http://parks-inc.com/" target="_blank">Parks, Inc.</a>
 				</div>
 			</div>
 		</div>
