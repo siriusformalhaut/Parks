@@ -28,6 +28,7 @@ from functools import reduce
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import random
+import math
 
 User = get_user_model()
 # Create your views here.
@@ -37,6 +38,7 @@ class AccountListView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = super(AccountListView, self).get_context_data(**kwargs)
+        context["search_form"] = ProjectSearchForm()
         return render(self.request, self.template_name, context)
     
     def post(self, _, *args, **kwargs):
@@ -169,7 +171,8 @@ def paginate_queryset(request, queryset, count):
         page_obj = paginator.page(paginator.num_pages)
     return page_obj
 
-class ProjectIndex(generic.ListView):
+class ProjectSearch(generic.ListView):
+    """Search Projects"""
     model = Project
     #number of items in one page
     paginate_by = 10
@@ -177,55 +180,133 @@ class ProjectIndex(generic.ListView):
     @csrf_protect
     def project_search(request):
         """Search Projects"""
+        # True if any keyword in the URL or the form exists
+        ifKeywordsExist = False
+        # If URL contains '?keywords=xxx'
+        keywordsInUrl = request.GET.get('keywords')
+        if (keywordsInUrl != '')and(keywordsInUrl != None):
+            keywords = keywordsInUrl.split()
+            ifKeywordsExist = True
         # create an empty form
-        form = ProjectSearchForm()
+        form = ProjectSearchForm(initial = {'keyword' : keywordsInUrl})
         # fetch all data of projects
         projects = Project.objects.all()
+        # dictionary of projects and sort order
+        ex_projects = []
+        for project in projects:
+            ex_projects.append({
+                'project': project,
+                'numinclkeywords': 1
+            })
         # When the search button is pushed
         if request.method == 'POST':
             # fetch the form data
             form = ProjectSearchForm(request.POST)
             projects = Project.objects.all()
+        # If the form is submitted
         if form.is_valid():
             # split the inputed data into keywords
             keywords = form.cleaned_data['keyword'].split()
+            ifKeywordsExist = True
+        if ifKeywordsExist == True:
             # make query from keywords: "and" combination of (keyword1 in name or details)
-            query = reduce(operator.and_, ((Q(name__contains=keyword)|Q(details__contains=keyword)) for keyword in keywords))
+            query = reduce(operator.or_, ((Q(name__contains=keyword)|Q(details__contains=keyword)|Q(categories__name__contains=keyword)) for keyword in keywords))
             # fetch the project data with the query
-            projects = Project.objects.filter(query)
+            projects = list(set(Project.objects.filter(query)))
+            # count how many keywords each project contains
+            ex_projects.clear()
+            for project in projects:
+                numinclkeywords = 0
+                for keyword in keywords:
+                    if (keyword in project.name)|(keyword in project.details):
+                        numinclkeywords += 1
+                    else:
+                        ifkwincat = False
+                        for category in project.categories.all():
+                            if keyword in category.name:
+                                ifkwincat = True
+                                break
+                        if ifkwincat:
+                            numinclkeywords += 1
+                ex_projects.append({
+                    'project': project,
+                    'numinclkeywords': numinclkeywords
+                })
+        # sort projects
+        projects_sorted = sorted(ex_projects, key=lambda x:x['numinclkeywords'], reverse=True)
         # paging
-        page_obj = paginate_queryset(request, projects, ProjectIndex.paginate_by)
+        page_obj = paginate_queryset(request, projects_sorted, ProjectSearch.paginate_by)
         # generate the context
         context = {
-            'form':form,
+            'search_form':form,
             'page_obj':page_obj,
         }
         # render project_search.html with the fetched project data
         return render(request,
                       'project_search.html',
                       context)
-    
-def project_explore(request):
-    return render(request, 'project_explore.html')
 
-def project_explore2(request):
-    categories = CategoryM.objects.all()
-    ExCategories = []
-    idbuf = 0
-    for category in categories:
-        ExCategories.append({"name":category.name,
-                             "left":random.uniform(0,800),
-                             "top":random.uniform(0,400),
-                             "radius":random.uniform(40,80),
-                             "id":idbuf
-                            })
-        idbuf = idbuf + 1
-    context = {
-        'categories':ExCategories,
-    }
-    return render(request,
-                  'project_explore2.html',
-                  context)
+class ProjectExplore(generic.ListView):
+    """Explore Projects"""
+    model = Project
+
+    def project_explore(request):
+        categories = CategoryM.objects.all()
+        # list of dic of category name + position + id
+        ExCategories = []
+        # category id in the html
+        idbuf = 0
+        # list of occupied space
+        Occupied = []
+        # number of spaces
+        MaxHorizontal = 6
+        MaxVertical = 2
+        MaxDisplay = MaxHorizontal*MaxVertical
+        # max diameter of category circles
+        MaxDiameter = 160
+        # the length of category list
+        CatLen = len(categories)
+
+        # pagination
+        categories = paginate_queryset(request, categories, MaxDisplay)
+
+        for category in categories:
+            for i in range(MaxDisplay):
+                radiusbuf = random.uniform(40, 80)
+                leftbuf = random.uniform(0, MaxDiameter*MaxHorizontal)
+                topbuf = random.uniform(100, 100+MaxDiameter*MaxVertical)
+                leftint = math.floor(leftbuf/MaxDiameter)
+                topint = math.floor((topbuf-100)/MaxDiameter)
+                posbuf = {
+                          'left':leftint,
+                          'top':topint,
+                }
+                # until posbuf stands for an empty space
+                if posbuf in Occupied:
+                    continue
+                else:
+                    # add the space in Occupied list
+                    Occupied.append(posbuf)
+                    # determine the position of the circle within the space
+                    leftbuf = leftint*160 + random.uniform(radiusbuf, MaxDiameter-radiusbuf)
+                    topbuf = topint*160 + 100 + random.uniform(radiusbuf, MaxDiameter-radiusbuf)
+                    break
+            # record the data in Extended Categories diclist
+            ExCategories.append({"name":category.name,
+                                 "left":leftbuf,
+                                 "top":topbuf,
+                                 "radius":radiusbuf,
+                                 "id":idbuf
+                                })
+            idbuf = idbuf + 1
+        # generate the context from ExCategories and a form to search projects
+        context = {
+            'categories':ExCategories,
+            'search_form':ProjectSearchForm()
+        }
+        return render(request,
+                      'project_explore.html',
+                      context)
     
 class UserProfileView(generic.TemplateView):
     model = UserProfile

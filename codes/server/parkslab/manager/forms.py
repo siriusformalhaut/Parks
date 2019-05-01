@@ -34,4 +34,4 @@ class UserCreateForm(UserCreationForm):
 
 class ProjectSearchForm(forms.Form):
     """Project Searching Form"""
-    keyword = forms.CharField(min_length=3, max_length=256)
+    keyword = forms.CharField(min_length=2, max_length=256, initial='')

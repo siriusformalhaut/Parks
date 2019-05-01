@@ -319,6 +319,7 @@ class Project(models.Model):
     name = models.CharField(max_length=256)
     details = models.TextField(blank=True)
     start_date = models.DateField()
+    categories = models.ManyToManyField("CategoryM", blank=True)
     project_status = models.ForeignKey(ProjectStatusM, on_delete=models.PROTECT)
     homepage = models.URLField(blank=True)
     email = models.EmailField(blank=True)
