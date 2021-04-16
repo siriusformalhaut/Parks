@@ -15,7 +15,7 @@ django-appconf==1.0.3
 django-bootstrap4==0.0.7
 django-compat==1.0.15
 django-compressor==2.2
-django-debug-toolbar==1.11
+django-debug-toolbar==1.11.1
 django-hijack==2.1.10
 django-pure-pagination==0.3.0
 django-sass-processor==0.7.3
