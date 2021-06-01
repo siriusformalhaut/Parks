@@ -43,7 +43,7 @@ rjsmin==1.0.12
 six==1.11.0
 sqlparse==0.2.4
 typed-ast==1.1.0
-urllib3==1.24.1
+urllib3==1.26.5
 virtualenv==16.1.0
 websockets==3.4
 Werkzeug==0.14.1
